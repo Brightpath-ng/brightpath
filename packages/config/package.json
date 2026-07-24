@@ -1,0 +1,24 @@
+{
+  "name": "@brightpath/config",
+  "private": true,
+  "version": "0.0.0",
+  "exports": {
+    "./tsconfig/base.json": "./tsconfig/base.json",
+    "./tsconfig/nextjs.json": "./tsconfig/nextjs.json",
+    "./tsconfig/node.json": "./tsconfig/node.json",
+    "./eslint/base.mjs": "./eslint/base.mjs",
+    "./eslint/next.mjs": "./eslint/next.mjs",
+    "./eslint/node.mjs": "./eslint/node.mjs",
+    "./prettier": "./prettier/index.mjs"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.37.3",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.19.1"
+  }
+}

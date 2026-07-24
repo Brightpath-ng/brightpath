@@ -1,0 +1,12 @@
+// Single schema for the whole product, organized into commented sections that mirror
+// apps/api/src/features/* as each feature adds its models (see docs/claude/architecture.md).
+// No models yet — the first feature to touch the database adds its section here.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
