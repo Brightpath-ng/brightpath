@@ -8,6 +8,7 @@ node_modules/
 # next.js
 .next/
 out/
+*.tsbuildinfo
 
 # express / build output
 dist/
