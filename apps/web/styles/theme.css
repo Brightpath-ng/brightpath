@@ -1,0 +1,104 @@
+/* apps/web/styles/theme.css
+ *
+ * Dashboard (Notion/Linear-restraint) semantic layer. Imports core.css and
+ * maps brand primitives to the small, quiet set of tokens dashboard
+ * components actually use. This is your existing tokens.css, re-homed —
+ * behavior and values are unchanged from what you already had, just
+ * re-pointed at the shared core scale instead of hardcoding hex directly.
+ */
+@import '../../../packages/ui/styles/core.css';
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@theme {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+:root {
+  /* Backgrounds */
+  --bg-base: var(--neutral-50);
+  --bg-surface: var(--neutral-0);
+  --bg-elevated: #f3f3f6;
+  --bg-border: var(--neutral-200);
+  --bg-border-subtle: var(--neutral-100);
+
+  /* Text */
+  --text-primary: var(--neutral-950);
+  --text-secondary: var(--neutral-700);
+  --text-tertiary: var(--neutral-400);
+  --text-on-accent: var(--neutral-0);
+
+  /* Brand — used sparingly: primary buttons, focus rings, active states.
+     Never a full-bleed section fill in the dashboard. */
+  --accent: var(--brand-green-500);
+  --accent-hover: var(--brand-green-700);
+  --accent-light: var(--brand-green-300);
+  --accent-dim: rgba(31, 122, 92, 0.09);
+  --accent-glow: rgba(31, 122, 92, 0.25);
+
+  /* Semantic */
+  --green: var(--status-success);
+  --amber: var(--status-warning);
+  --red: var(--status-danger);
+  --red-bg: rgba(220, 38, 38, 0.06);
+  --red-border: rgba(220, 38, 38, 0.2);
+  --amber-bg: rgba(217, 119, 6, 0.07);
+  --amber-border: rgba(217, 119, 6, 0.25);
+
+  /* Shadows */
+  --shadow-card: var(--shadow-card);
+  --shadow-elevated: var(--shadow-elevated);
+  --shadow-accent: 0 6px 20px rgba(31, 122, 92, 0.35);
+
+  /* Radius — dashboard uses the restrained end of the scale */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
+    letter-spacing: -0.012em;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--accent-dim);
+    color: var(--accent-light);
+  }
+
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--bg-base);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--bg-border);
+    border-radius: 3px;
+  }
+}

@@ -19,8 +19,9 @@ inline. Claude Code resolves `@` imports automatically.
 BrightPath is a managed tutoring and learning platform for Nigeria (see `/docs/product/` for the
 full business/product blueprint). Four user roles — Admin, Parent, Tutor, Student — plus a public
 marketing site. Three learning tracks (tutor-led, hybrid, self-directed). Hybrid delivery (online
-+ in-person). A live monitoring/accountability layer (check-in/check-out, geofencing, reliability
-scoring). Full detail lives in the product blueprint — read it before starting unfamiliar features.
+
+- in-person). A live monitoring/accountability layer (check-in/check-out, geofencing, reliability
+  scoring). Full detail lives in the product blueprint — read it before starting unfamiliar features.
 
 ## 2. Non-negotiables
 
@@ -46,21 +47,21 @@ once":
 
 ## 3. Tech stack (fixed for MVP — don't introduce alternatives without discussion)
 
-| Layer | Choice |
-|---|---|
-| Monorepo tooling | Turborepo + pnpm workspaces |
-| Frontend | Next.js (App Router), TypeScript, Tailwind v4 |
-| Backend | Express, TypeScript |
-| ORM | Prisma |
-| Database | Supabase (Postgres) |
-| Auth | Clerk |
-| Payments | Paystack (primary), design the payment layer so a second provider can be added without touching callers |
-| Validation | Zod, shared between frontend and backend via `packages/types` |
-| Unit/integration tests | Vitest |
-| Component tests | React Testing Library |
-| API tests | Supertest |
-| E2E tests | Playwright |
-| Lint/format | ESLint + Prettier, shared config in `packages/config` |
+| Layer                  | Choice                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| Monorepo tooling       | Turborepo + pnpm workspaces                                                                             |
+| Frontend               | Next.js (App Router), TypeScript, Tailwind v4                                                           |
+| Backend                | Express, TypeScript                                                                                     |
+| ORM                    | Prisma                                                                                                  |
+| Database               | Supabase (Postgres)                                                                                     |
+| Auth                   | Clerk                                                                                                   |
+| Payments               | Paystack (primary), design the payment layer so a second provider can be added without touching callers |
+| Validation             | Zod, shared between frontend and backend via `packages/types`                                           |
+| Unit/integration tests | Vitest                                                                                                  |
+| Component tests        | React Testing Library                                                                                   |
+| API tests              | Supertest                                                                                               |
+| E2E tests              | Playwright                                                                                              |
+| Lint/format            | ESLint + Prettier, shared config in `packages/config`                                                   |
 
 ## 4. How to work in this repo, in one sentence
 
