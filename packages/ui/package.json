@@ -9,17 +9,25 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@brightpath/utils": "workspace:*"
   },
   "devDependencies": {
     "@brightpath/config": "workspace:*",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
     "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.18.0",
+    "jsdom": "^25.0.1",
     "react": "^19.0.0",
-    "typescript": "^5.7.3"
+    "react-dom": "^19.0.0",
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.8"
   },
   "peerDependencies": {
     "react": "^19.0.0"
