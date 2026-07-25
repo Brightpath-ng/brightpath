@@ -62,6 +62,7 @@ once":
 | API tests              | Supertest                                                                                               |
 | E2E tests              | Playwright                                                                                              |
 | Lint/format            | ESLint + Prettier, shared config in `packages/config`                                                   |
+| Icons                  | `lucide-react` — outline icons only; it does not satisfy the marketing site's "isometric/3D" quick-link register (`docs/claude/design-system.md` §7) on its own, that still needs dedicated illustration assets when the budget for them exists |
 
 ## 4. How to work in this repo, in one sentence
 
