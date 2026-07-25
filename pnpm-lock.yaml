@@ -212,6 +212,9 @@ importers:
 
   packages/db:
     dependencies:
+      '@brightpath/types':
+        specifier: workspace:*
+        version: link:../types
       '@prisma/adapter-pg':
         specifier: ^7.9.0
         version: 7.9.0
