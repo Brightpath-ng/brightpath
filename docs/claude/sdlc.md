@@ -48,6 +48,9 @@ One feature or fix per PR, small enough to review in one sitting. Conventional c
 (`feat:`, `fix:`, `chore:`, `test:`, `docs:`). PR description restates the plan from step 1 and
 notes what was tested and how.
 
+No AI-attribution footer or trailer anywhere in the PR: no "Generated with Claude Code" line in
+the PR description, no `Co-Authored-By: Claude` trailer in any commit message on the branch.
+
 ## Branching
 
 Trunk-based: `main` is always deployable. Feature branches named `feature/<short-name>`,
