@@ -3,6 +3,9 @@ import { QuickLinksGrid } from "@/components/QuickLinksGrid";
 import { ProofCarousel } from "@/components/ProofCarousel";
 import { TestimonialsSection } from "@/components/TestimonialsSection";
 import { TracksGrid } from "@/components/TracksGrid";
+import { WhyChooseUs } from "@/components/WhyChooseUs";
+import { GuidesTeaser } from "@/components/GuidesTeaser";
+import { FaqAccordion } from "@/components/FaqAccordion";
 
 export default function Home() {
   return (
@@ -12,6 +15,9 @@ export default function Home() {
       <ProofCarousel />
       <TestimonialsSection />
       <TracksGrid />
+      <WhyChooseUs />
+      <GuidesTeaser />
+      <FaqAccordion />
     </main>
   );
 }
