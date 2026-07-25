@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "exports": {
-    "./styles/tokens.css": "./styles/tokens.css",
+    "./styles/core.css": "./styles/core.css",
     ".": "./src/index.ts"
   },
   "scripts": {
@@ -12,9 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@brightpath/utils": "workspace:*",
-    "tailwindcss": "^4.0.0",
-    "tw-animate-css": "^1.1.1"
+    "@brightpath/utils": "workspace:*"
   },
   "devDependencies": {
     "@brightpath/config": "workspace:*",

@@ -100,6 +100,9 @@ importers:
       tailwindcss:
         specifier: ^4.0.0
         version: 4.3.3
+      tw-animate-css:
+        specifier: ^1.1.1
+        version: 1.4.0
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
@@ -143,6 +146,9 @@ importers:
       tailwindcss:
         specifier: ^4.0.0
         version: 4.3.3
+      tw-animate-css:
+        specifier: ^1.1.1
+        version: 1.4.0
       typescript:
         specifier: ^5.7.3
         version: 5.9.3
@@ -232,12 +238,6 @@ importers:
       '@brightpath/utils':
         specifier: workspace:*
         version: link:../utils
-      tailwindcss:
-        specifier: ^4.0.0
-        version: 4.3.3
-      tw-animate-css:
-        specifier: ^1.1.1
-        version: 1.4.0
     devDependencies:
       '@brightpath/config':
         specifier: workspace:*

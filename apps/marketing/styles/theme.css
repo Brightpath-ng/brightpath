@@ -1,0 +1,93 @@
+/* apps/marketing/styles/theme.css
+ *
+ * Marketing semantic layer. Imports the SAME core.css as apps/web — the
+ * brand green is defined once — but maps it to a bolder, more expressive
+ * set of tokens, plus introduces marketing-only tokens (prefixed --mkt-)
+ * that must never be referenced from apps/web or packages/ui.
+ *
+ * Reference: ovoenergy.com homepage. Two-tone system — bright brand green
+ * + a near-black-green "dark section" tone — carrying the warmth on its
+ * own via real photography and rounded type, not a third accent hue.
+ */
+@import '../../../packages/ui/styles/core.css';
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@theme {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+:root {
+  /* Base surface tokens — cream, not white, per the OVO reference.
+     Kept compatible with packages/ui primitives (Button, Badge, Input)
+     so shared components re-skin automatically. */
+  --bg-base: var(--mkt-bg-cream);
+  --bg-surface: var(--neutral-0);
+  --bg-elevated: var(--mkt-bg-cream);
+  --bg-border: var(--neutral-200);
+  --bg-border-subtle: var(--neutral-100);
+  --text-primary: var(--neutral-950);
+  --text-secondary: var(--neutral-700);
+  --text-tertiary: var(--neutral-400);
+  --text-on-accent: var(--neutral-0);
+  --accent: var(--brand-green-500);
+  --accent-hover: var(--brand-green-700);
+  --accent-light: var(--brand-green-300);
+  --accent-dim: rgba(31, 122, 92, 0.09);
+  --shadow-card: var(--shadow-card);
+  --shadow-elevated: var(--shadow-elevated);
+
+  /* Marketing overrides packages/ui's default --radius-md-based Button
+     to a full pill — every marketing CTA, dark or light or outline,
+     should render as a pill, matching the OVO reference exactly.
+     (--radius-full itself is inherited unchanged from core.css — it's
+     already 9999px there, so it isn't redeclared here.) */
+  --radius-md: var(--radius-full);
+
+  /* ── Marketing-only tokens — never used outside apps/marketing ── */
+  --mkt-bg-cream: #f9f5f0;
+  --mkt-hero-gradient-start: var(--brand-green-500);
+  --mkt-hero-gradient-end: var(--brand-green-900);
+  --mkt-section-dark: var(--brand-green-900);
+  --mkt-text-on-dark: var(--neutral-0);
+  --mkt-text-on-dark-muted: rgba(255, 255, 255, 0.72);
+
+  /* OPTIONAL — not used by default. The OVO reference carries all its
+     warmth through two tones (bright green / near-black-green) plus
+     real photography, with no third accent hue. Kept here, defined but
+     unreferenced, in case a future decision reintroduces a warm
+     highlight for stat callouts — don't wire this into components
+     until that decision is made explicitly. */
+  --mkt-optional-warm-accent: var(--brand-gold-500);
+  --mkt-optional-warm-accent-text: var(--brand-gold-700);
+
+  --mkt-progress-line: var(--brand-green-300);
+  --mkt-radius-hero: var(--radius-2xl);
+  --mkt-radius-card: var(--radius-2xl);
+  --mkt-heading-tracking: -0.02em;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+}
