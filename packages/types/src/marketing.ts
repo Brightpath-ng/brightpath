@@ -2,8 +2,6 @@ import { z } from "zod";
 
 const proofCardBase = {
   id: z.string(),
-  footnote: z.number().int().positive().optional(),
-  footnoteText: z.string().optional(),
 };
 
 export const ProofCardSchema = z.discriminatedUnion("type", [
@@ -37,3 +35,21 @@ export const ProofCarouselResponseSchema = z.object({
 });
 
 export type ProofCarouselResponse = z.infer<typeof ProofCarouselResponseSchema>;
+
+export const TestimonialSchema = z.object({
+  id: z.string(),
+  quote: z.string(),
+  authorName: z.string(),
+  authorContext: z.string(),
+  rating: z.number().int().min(1).max(5),
+});
+
+export type Testimonial = z.infer<typeof TestimonialSchema>;
+
+export const TestimonialsResponseSchema = z.object({
+  aggregateRating: z.number().min(0).max(5),
+  reviewCount: z.number().int().nonnegative(),
+  testimonials: z.array(TestimonialSchema),
+});
+
+export type TestimonialsResponse = z.infer<typeof TestimonialsResponseSchema>;
