@@ -1,6 +1,5 @@
 // Single schema for the whole product, organized into commented sections that mirror
 // apps/api/src/features/* as each feature adds its models (see docs/claude/architecture.md).
-// No models yet — the first feature to touch the database adds its section here.
 
 generator client {
   provider = "prisma-client-js"
@@ -9,4 +8,61 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+}
+
+// ── auth ──────────────────────────────────────────────────────────────────
+// Multi-tenant-ready from day one (architecture.md, blueprint §8.1) --
+// individual parents/tutors default to a single "BrightPath Direct" tenant
+// row, so a future school/corporate tenant is a new row, not a schema change.
+model Tenant {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  type      TenantType @default(direct)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  users     User[]
+
+  @@map("tenants")
+}
+
+enum TenantType {
+  direct
+  school
+  corporate
+}
+
+// Table-driven RBAC, not a hardcoded enum (architecture.md, blueprint §8.1) --
+// a future role (School Coordinator, Franchise Manager) is a new row, not a
+// code change. The four Phase 1 roles are seeded in src/seed.ts.
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  permissions String[] @default([])
+
+  users       User[]
+
+  @@map("roles")
+}
+
+// One row per Clerk identity. Role is resolved from here and mirrored into
+// Clerk's publicMetadata by the API on creation, so apps/web's middleware can
+// gate routes without a DB round trip on every request (architecture.md).
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  tenantId  String
+  roleId    String
+  name      String
+  email     String   @unique
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  role      Role     @relation(fields: [roleId], references: [id])
+
+  @@index([tenantId])
+  @@index([roleId])
+  @@map("users")
 }
