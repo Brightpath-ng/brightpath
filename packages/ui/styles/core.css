@@ -51,7 +51,10 @@
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.06);
   --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.1);
 
-  /* Fonts */
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
+  /* Fonts — Manrope loaded via next/font in each app's layout.tsx, which
+     defines --font-manrope on <html>. No mono webfont loaded yet; nothing
+     in the product needs one, so this stays a plain system stack until
+     something actually does. */
+  --font-sans: var(--font-manrope), system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", monospace;
 }

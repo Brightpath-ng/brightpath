@@ -10,6 +10,13 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
+/* Tailwind's automatic content detection doesn't cross workspace-package
+   boundaries (packages/ui is resolved through a node_modules symlink) — without
+   this, any Tailwind utility that only appears literally inside packages/ui's
+   source (not also coincidentally used somewhere in this app) silently
+   generates no CSS at all. */
+@source '../../../packages/ui/src';
+
 @theme {
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);

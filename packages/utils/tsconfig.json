@@ -1,5 +1,5 @@
 {
-  "extends": "@brightpath/config/tsconfig/node.json",
+  "extends": "@brightpath/config/tsconfig/base.json",
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"
