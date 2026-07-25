@@ -10,8 +10,6 @@ export const proofCards: ProofCard[] = [
     id: "score-improvement",
     value: "42% → 84%",
     label: "Average score improvement across our Term 2 tutor-led cohort",
-    footnote: 1,
-    footnoteText: "Baseline vs. latest assessment score, Term 2 2026 tutor-led cohort, n=134 students.",
   },
   {
     type: "trust_moment",
@@ -51,15 +49,9 @@ function ProofCardContent({ card, isActive }: { card: ProofCard; isActive: boole
         </svg>
         <p className="text-4xl font-black sm:text-5xl" style={{ color: "var(--mkt-text-on-dark)" }}>
           {card.value}
-          {card.footnote ? (
-            <sup className="ml-1 text-base font-semibold" aria-hidden="true">
-              {card.footnote}
-            </sup>
-          ) : null}
         </p>
         <p className="max-w-sm text-base" style={{ color: "var(--mkt-text-on-dark-muted)" }}>
           {card.label}
-          {card.footnote ? <span className="sr-only"> (see footnote {card.footnote})</span> : null}
         </p>
       </>
     );
