@@ -6,6 +6,9 @@ import { TracksGrid } from "@/components/TracksGrid";
 import { WhyChooseUs } from "@/components/WhyChooseUs";
 import { GuidesTeaser } from "@/components/GuidesTeaser";
 import { FaqAccordion } from "@/components/FaqAccordion";
+import { TutorCTA } from "@/components/TutorCTA";
+import { FinalCTA } from "@/components/FinalCTA";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -18,6 +21,9 @@ export default function Home() {
       <WhyChooseUs />
       <GuidesTeaser />
       <FaqAccordion />
+      <TutorCTA />
+      <FinalCTA />
+      <Footer />
     </main>
   );
 }
