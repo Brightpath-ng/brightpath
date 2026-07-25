@@ -6,8 +6,13 @@ import { TestimonialsSection, testimonials } from "../TestimonialsSection";
 describe("TestimonialsSection", () => {
   it("renders the trust-stats rating block", () => {
     render(<TestimonialsSection />);
-    expect(screen.getByText("4.8 out of 5")).toBeInTheDocument();
+    expect(screen.getByText(/^4\.8 out of 5/)).toBeInTheDocument();
     expect(screen.getByText(/based on 240 parent reviews/i)).toBeInTheDocument();
+  });
+
+  it("marks the aggregate rating claim with a footnote reference", () => {
+    render(<TestimonialsSection />);
+    expect(screen.getByText(/see footnote 2/i)).toBeInTheDocument();
   });
 
   it("renders all three testimonial quotes with author attribution", () => {

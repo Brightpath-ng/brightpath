@@ -8,7 +8,7 @@ import { GuidesTeaser } from "@/components/GuidesTeaser";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { TutorCTA } from "@/components/TutorCTA";
 import { FinalCTA } from "@/components/FinalCTA";
-import { Footer } from "@/components/Footer";
+import { Footnotes } from "@/components/Footnotes";
 
 export default function Home() {
   return (
@@ -23,7 +23,7 @@ export default function Home() {
       <FaqAccordion />
       <TutorCTA />
       <FinalCTA />
-      <Footer />
+      <Footnotes />
     </main>
   );
 }

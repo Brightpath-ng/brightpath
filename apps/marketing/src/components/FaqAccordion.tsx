@@ -99,7 +99,7 @@ export function FaqAccordion() {
               <div
                 key={faq.id}
                 id={`faq-${faq.id}`}
-                className="overflow-hidden"
+                className="scroll-mt-24 overflow-hidden"
                 style={{
                   background: "var(--bg-surface)",
                   borderRadius: "var(--mkt-radius-card)",

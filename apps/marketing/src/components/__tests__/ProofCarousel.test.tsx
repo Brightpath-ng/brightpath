@@ -20,7 +20,7 @@ describe("ProofCarousel", () => {
 
   it("renders the first card (the before/after stat) visibly by default, others hidden", () => {
     render(<ProofCarousel />);
-    expect(screen.getByText("42% → 84%")).toBeVisible();
+    expect(screen.getByText(/42% → 84%/)).toBeVisible();
     expect(screen.getByText("Every lesson starts with a verified check-in")).not.toBeVisible();
     expect(screen.getByRole("link", { name: "Explore Self-directed", hidden: true })).not.toBeVisible();
   });
@@ -29,14 +29,14 @@ describe("ProofCarousel", () => {
     render(<ProofCarousel />);
     fireEvent.click(screen.getByRole("button", { name: /next proof card/i }));
     expect(screen.getByText("Every lesson starts with a verified check-in")).toBeVisible();
-    expect(screen.getByText("42% → 84%")).not.toBeVisible();
+    expect(screen.getByText(/42% → 84%/)).not.toBeVisible();
   });
 
   it("goes back to the previous card when the previous control is clicked", () => {
     render(<ProofCarousel />);
     fireEvent.click(screen.getByRole("button", { name: /previous proof card/i }));
     expect(screen.getByRole("link", { name: "Explore Self-directed" })).toBeVisible();
-    expect(screen.getByText("42% → 84%")).not.toBeVisible();
+    expect(screen.getByText(/42% → 84%/)).not.toBeVisible();
   });
 
   it("jumps directly to a card via its dot indicator", () => {
@@ -47,14 +47,19 @@ describe("ProofCarousel", () => {
 
   it("auto-advances to the next card after the interval elapses", () => {
     render(<ProofCarousel />);
-    expect(screen.getByText("42% → 84%")).toBeVisible();
+    expect(screen.getByText(/42% → 84%/)).toBeVisible();
 
     act(() => {
       vi.advanceTimersByTime(6000);
     });
 
     expect(screen.getByText("Every lesson starts with a verified check-in")).toBeVisible();
-    expect(screen.getByText("42% → 84%")).not.toBeVisible();
+    expect(screen.getByText(/42% → 84%/)).not.toBeVisible();
+  });
+
+  it("marks the stat claim with a footnote reference", () => {
+    render(<ProofCarousel />);
+    expect(screen.getByText(/see footnote 1/i)).toBeInTheDocument();
   });
 
   it("marks the inactive cards aria-hidden so screen readers skip them", () => {

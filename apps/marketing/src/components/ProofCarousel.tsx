@@ -49,9 +49,13 @@ function ProofCardContent({ card, isActive }: { card: ProofCard; isActive: boole
         </svg>
         <p className="text-4xl font-black sm:text-5xl" style={{ color: "var(--mkt-text-on-dark)" }}>
           {card.value}
+          <sup className="ml-1 text-base font-semibold" aria-hidden="true">
+            1
+          </sup>
         </p>
         <p className="max-w-sm text-base" style={{ color: "var(--mkt-text-on-dark-muted)" }}>
           {card.label}
+          <span className="sr-only"> (see footnote 1)</span>
         </p>
       </>
     );
