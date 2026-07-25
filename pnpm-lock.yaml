@@ -66,6 +66,9 @@ importers:
 
   apps/marketing:
     dependencies:
+      '@brightpath/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@brightpath/ui':
         specifier: workspace:*
         version: link:../../packages/ui
