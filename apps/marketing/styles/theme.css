@@ -35,8 +35,22 @@
   --accent-hover: var(--brand-green-700);
   --accent-light: var(--brand-green-300);
   --accent-dim: rgba(31, 122, 92, 0.09);
+  --accent-border: rgba(31, 122, 92, 0.2);
   --shadow-card: var(--shadow-card);
   --shadow-elevated: var(--shadow-elevated);
+  --shadow-accent: 0 6px 20px rgba(31, 122, 92, 0.35);
+
+  /* Semantic — inherited so cross-surface primitives (Badge, etc.) resolve
+     correctly here too, even though marketing rarely reaches for these. */
+  --green: var(--status-success);
+  --amber: var(--status-warning);
+  --red: var(--status-danger);
+  --green-bg: rgba(5, 150, 105, 0.08);
+  --green-border: rgba(5, 150, 105, 0.2);
+  --red-bg: rgba(220, 38, 38, 0.06);
+  --red-border: rgba(220, 38, 38, 0.2);
+  --amber-bg: rgba(217, 119, 6, 0.07);
+  --amber-border: rgba(217, 119, 6, 0.25);
 
   /* Marketing overrides packages/ui's default --radius-md-based Button
      to a full pill — every marketing CTA, dark or light or outline,
