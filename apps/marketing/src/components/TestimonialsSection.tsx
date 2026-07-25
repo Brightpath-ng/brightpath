@@ -57,9 +57,13 @@ export function TestimonialsSection() {
           <StarRating rating={aggregateRating} size="size-6" />
           <p className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>
             {aggregateRating.toFixed(1)} out of 5
+            <sup className="ml-0.5 text-sm font-semibold" aria-hidden="true">
+              2
+            </sup>
           </p>
           <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
             Based on {reviewCount} parent reviews
+            <span className="sr-only"> (see footnote 2)</span>
           </p>
         </div>
 

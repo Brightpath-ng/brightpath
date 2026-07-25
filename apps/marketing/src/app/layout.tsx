@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 import "./globals.css";
 
 const manrope = Manrope({
@@ -9,7 +11,7 @@ const manrope = Manrope({
 
 export const metadata: Metadata = {
   title: "BrightPath — Trusted tutors. Measurable progress.",
-  description: "Managed tutoring and learning platform for Nigeria.",
+  description: "Managed tutoring and measurable learning progress for students in Nigeria.",
 };
 
 export default function RootLayout({
@@ -19,7 +21,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={manrope.variable}>
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+        <Footer />
+      </body>
     </html>
   );
 }
