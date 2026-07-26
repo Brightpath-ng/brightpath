@@ -2,7 +2,7 @@
   "name": "brightpath",
   "private": true,
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "packageManager": "pnpm@10.30.3",
   "scripts": {
