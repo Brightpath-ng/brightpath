@@ -16,11 +16,14 @@ on:
 jobs:
   migrate:
     runs-on: ubuntu-latest
-    # Ties this job to a GitHub Environment named "production": scopes the
-    # DATABASE_URL secret so it's only ever readable here, and (once you add
-    # required reviewers to that Environment in repo Settings) blocks the job
-    # until someone approves the run.
-    environment: production
+    # Ties this job to the "Production" GitHub Environment (capital P -- must
+    # match exactly, GitHub Environment names are case-sensitive; a mismatch
+    # here doesn't error, it silently auto-creates a brand new, unprotected
+    # environment with whatever name is written here, bypassing the required
+    # reviewer entirely). Scopes the DATABASE_URL secret so it's only ever
+    # readable by this job, and blocks the job until a required reviewer
+    # approves the run.
+    environment: Production
     # Job-level, not per-step: prisma generate needs this too (Prisma 7's
     # config-file loading resolves DATABASE_URL just to load the config, not
     # just when a step actually connects) -- declaring it per-step is exactly
