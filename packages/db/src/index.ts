@@ -3,6 +3,8 @@ import path from "node:path";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/client/index.js";
 
+export type { Tenant, Role, User, TenantType } from "../generated/client/index.js";
+
 // This monorepo keeps a single .env.local at the repo root (matching the committed
 // .env.example) rather than duplicating it per package. Callers that already loaded
 // it (e.g. apps/api) are unaffected -- dotenv doesn't override already-set vars --
