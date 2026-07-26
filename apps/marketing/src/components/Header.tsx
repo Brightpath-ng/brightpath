@@ -16,6 +16,10 @@ const navLinks: NavLink[] = [
   { label: "Blog", href: "/blog" },
 ];
 
+// apps/web is a separate deployed app (separate origin) -- a relative /sign-in
+// href would 404 here, so this always links out to web's own absolute URL.
+const signInHref = `${process.env.NEXT_PUBLIC_WEB_APP_URL ?? "http://localhost:3001"}/sign-in`;
+
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -43,7 +47,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-4 lg:flex">
-          <a href="/sign-in" className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
+          <a href={signInHref} className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
             Sign in
           </a>
           <Button size="md">Find a Tutor</Button>
@@ -84,7 +88,7 @@ export function Header() {
             </a>
           ))}
           <a
-            href="/sign-in"
+            href={signInHref}
             className="rounded-[var(--radius-md)] px-2 py-2.5 text-sm font-medium"
             style={{ color: "var(--text-secondary)" }}
           >

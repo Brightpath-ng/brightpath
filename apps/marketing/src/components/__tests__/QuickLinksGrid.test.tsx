@@ -12,7 +12,7 @@ describe("QuickLinksGrid", () => {
     );
     expect(screen.getByRole("link", { name: /track my child's progress/i })).toHaveAttribute(
       "href",
-      "/sign-in"
+      "http://localhost:3001/sign-in"
     );
     expect(screen.getByRole("link", { name: /become a tutor/i })).toHaveAttribute(
       "href",
@@ -20,7 +20,7 @@ describe("QuickLinksGrid", () => {
     );
     expect(screen.getByRole("link", { name: /find my tutor's report/i })).toHaveAttribute(
       "href",
-      "/sign-in"
+      "http://localhost:3001/sign-in"
     );
   });
 
