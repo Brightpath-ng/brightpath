@@ -1,35 +1,15 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
-// No .js extension here, unlike every other relative import in this codebase --
-// Turbopack's Edge Runtime bundler (used only for middleware) doesn't resolve a
-// ".js"-suffixed import to a ".ts" file the way its Node.js-targeted bundler
-// does elsewhere in the app. With the extension, this 404s at runtime with no
-// typecheck/lint error, since TS resolution and the Edge bundler's resolution
-// disagree. Found by actually running the dev server, not from reading the code.
-import { decideRouting } from "./lib/auth-routing";
+import { clerkMiddleware } from "@clerk/nextjs/server";
 
-const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
-
-export default clerkMiddleware(async (auth, req) => {
-  const { userId, sessionClaims, redirectToSignIn } = await auth();
-
-  const decision = decideRouting({
-    pathname: req.nextUrl.pathname,
-    isPublicRoute: isPublicRoute(req),
-    isSignedIn: Boolean(userId),
-    role: sessionClaims?.publicMetadata?.role ?? null,
-  });
-
-  if (decision.action === "allow") {
-    return;
-  }
-
-  if (decision.to === "/sign-in") {
-    return redirectToSignIn();
-  }
-
-  return NextResponse.redirect(new URL(decision.to, req.url));
-});
+// No route matching or redirect logic here on purpose -- Clerk's
+// createRouteMatcher-based path matching is deprecated in favor of
+// resource-based auth checks (requireRole() called directly from each role
+// group's layout.tsx, e.g. apps/web/src/app/(admin)/layout.tsx). Rationale
+// from Clerk: middleware-based matching can diverge from how Next.js
+// actually resolves a route (dynamic segments, rewrites, parallel routes),
+// leaving a protected page reachable. This middleware's only job is to
+// establish the auth context that auth() reads in Server Components -- it
+// still needs to run on every page for that to work, hence the broad matcher.
+export default clerkMiddleware();
 
 export const config = {
   matcher: [

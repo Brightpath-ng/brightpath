@@ -1,0 +1,57 @@
+name: Migrate production database
+
+# Deliberately NOT triggered by push/merge to main. Code merging to main and a
+# migration applying to production are different decisions with different
+# timing -- see docs/claude/environments.md. This only ever runs when someone
+# explicitly clicks "Run workflow" in the Actions tab (or `gh workflow run
+# migrate-production.yml`), after confirming the migration in `main` is
+# actually ready to ship, not just merged.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "migrate" to confirm you want to apply pending migrations to the PRODUCTION database'
+        required: true
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    # Ties this job to a GitHub Environment named "production": scopes the
+    # DATABASE_URL secret so it's only ever readable here, and (once you add
+    # required reviewers to that Environment in repo Settings) blocks the job
+    # until someone approves the run.
+    environment: production
+    steps:
+      - name: Verify confirmation input
+        if: inputs.confirm != 'migrate'
+        run: |
+          echo "::error::Confirmation input must be exactly 'migrate' -- got '${{ inputs.confirm }}'. Aborting without touching the database."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @brightpath/db db:generate
+
+      - name: Show pending migrations
+        run: pnpm --filter @brightpath/db exec prisma migrate status
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+
+      # migrate deploy (not `migrate dev`): non-interactive, only applies
+      # already-committed migration files in order, never generates new ones,
+      # never resets/drops anything on drift.
+      - name: Apply migrations
+        run: pnpm --filter @brightpath/db exec prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
