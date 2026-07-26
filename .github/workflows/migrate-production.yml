@@ -21,6 +21,12 @@ jobs:
     # required reviewers to that Environment in repo Settings) blocks the job
     # until someone approves the run.
     environment: production
+    # Job-level, not per-step: prisma generate needs this too (Prisma 7's
+    # config-file loading resolves DATABASE_URL just to load the config, not
+    # just when a step actually connects) -- declaring it per-step is exactly
+    # how this got missed on the "Generate Prisma client" step the first time.
+    env:
+      DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
     steps:
       - name: Verify confirmation input
         if: inputs.confirm != 'migrate'
@@ -45,13 +51,9 @@ jobs:
 
       - name: Show pending migrations
         run: pnpm --filter @brightpath/db exec prisma migrate status
-        env:
-          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
 
       # migrate deploy (not `migrate dev`): non-interactive, only applies
       # already-committed migration files in order, never generates new ones,
       # never resets/drops anything on drift.
       - name: Apply migrations
         run: pnpm --filter @brightpath/db exec prisma migrate deploy
-        env:
-          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
