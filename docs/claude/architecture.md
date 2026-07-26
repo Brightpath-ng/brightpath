@@ -17,7 +17,7 @@ product blueprint argues against building things you'll need to bolt on later:
   primitives (progress dashboards, messaging, assessment views).
 - Splitting into four apps means four deploys, four places a shared component can drift, and
   duplicated data-fetching logic.
-- Next.js route groups + middleware give you clean role separation without repo separation.
+- Next.js route groups give you clean role separation without repo separation.
 
 Only the **marketing site** gets its own app — it has a genuinely different design language, a
 different (public, SEO-driven, mostly static) rendering profile, and no auth, so splitting it out
@@ -53,17 +53,23 @@ apps/web/src/
 ├── app/
 │   ├── (marketing-none)/            # n/a — marketing lives in apps/marketing
 │   ├── (auth)/sign-in, sign-up      # Clerk-hosted or custom, minimal
-│   ├── (admin)/...                  # gated by middleware: role === 'admin'
-│   ├── (parent)/...                 # gated by middleware: role === 'parent'
-│   ├── (tutor)/...                  # gated by middleware: role === 'tutor'
-│   └── (student)/...                # gated by middleware: role === 'student'
-├── middleware.ts                    # Clerk auth + role-based route protection
+│   ├── (admin)/layout.tsx, ...      # requireRole('admin') in the layout
+│   ├── (parent)/layout.tsx, ...     # requireRole('parent') in the layout
+│   ├── (tutor)/layout.tsx, ...      # requireRole('tutor') in the layout
+│   └── (student)/layout.tsx, ...    # requireRole('student') in the layout
+├── middleware.ts                    # clerkMiddleware() only — establishes auth
+│                                     # context for auth(); no route matching
+├── lib/require-role.ts              # the resource-based auth check itself
 └── features/                        # see "Feature-based structure" below
 ```
 
-Role is resolved from Clerk's `publicMetadata` (set by the API on user creation/approval), checked
-in `middleware.ts` before a request ever reaches a route group. A parent hitting an `/admin/*`
-route gets redirected, not shown a broken page.
+Role is resolved from Clerk's `publicMetadata` (set by the API on user creation/approval) and
+checked via `requireRole(role)`, called directly inside each role group's `layout.tsx` — not
+centralized in `middleware.ts`. This is Clerk's current recommended pattern (their own
+`createRouteMatcher`-based middleware matching is deprecated): a check made in the layout Next.js
+has already resolved a request to can't diverge from the actual route the way a middleware path
+pattern can (dynamic segments, rewrites, parallel routes). A parent hitting an `/admin/*` route
+gets redirected, not shown a broken page.
 
 ## Feature-based (vertical slice) structure — both frontend and backend
 

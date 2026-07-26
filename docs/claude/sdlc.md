@@ -38,6 +38,11 @@ cover it.
       layer)
 - [ ] No hardcoded design values — checked against `design-system.md`
 - [ ] No `any`, no unexplained `@ts-ignore`
+- [ ] No deprecated APIs — check the type signature/doc comment of anything touched from a
+      third-party SDK (Clerk, Prisma, Next.js, etc.) for a `@deprecated` tag before using it, and
+      follow the migration path it points to rather than suppressing the warning. Deprecation
+      notices on auth/security-relevant APIs (e.g. Clerk's `createRouteMatcher`) usually exist
+      because the old pattern has a real gap, not just an API-shape preference
 - [ ] Loading, empty, and error states all handled in every new UI surface — not just the happy
       path (see §"No half-baked UI" below)
 - [ ] No secrets, no environment-specific values, no direct production access committed

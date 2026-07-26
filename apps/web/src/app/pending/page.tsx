@@ -1,4 +1,20 @@
-export default function PendingPage() {
+import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
+export default async function PendingPage() {
+  const { userId, sessionClaims } = await auth();
+
+  if (!userId) {
+    redirect("/sign-in");
+  }
+
+  // Already has a role (e.g. navigated back here after the webhook caught
+  // up) -- send them to their own dashboard instead of a stale waiting page.
+  const role = sessionClaims?.publicMetadata?.role;
+  if (role) {
+    redirect(`/${role}`);
+  }
+
   return (
     <div
       className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center"
