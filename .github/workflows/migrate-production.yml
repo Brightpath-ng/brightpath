@@ -49,8 +49,13 @@ jobs:
       - name: Generate Prisma client
         run: pnpm --filter @brightpath/db db:generate
 
+      # Informational only -- `prisma migrate status` exits non-zero whenever
+      # ANY migration is unapplied, which is the normal, expected state every
+      # single time this workflow runs (that's the whole reason to run it).
+      # Without the `|| true`, this step would fail the job before ever
+      # reaching "Apply migrations" -- on literally every real run.
       - name: Show pending migrations
-        run: pnpm --filter @brightpath/db exec prisma migrate status
+        run: pnpm --filter @brightpath/db exec prisma migrate status || true
 
       # migrate deploy (not `migrate dev`): non-interactive, only applies
       # already-committed migration files in order, never generates new ones,
