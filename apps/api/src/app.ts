@@ -1,6 +1,7 @@
 import cors from "cors";
 import express, { type Express } from "express";
 import { authRouter } from "./features/auth/routes.js";
+import { tutorsRouter } from "./features/tutors/routes.js";
 
 const allowedOrigins = [process.env.MARKETING_ORIGIN, process.env.WEB_ORIGIN].filter(
   (origin): origin is string => Boolean(origin)
@@ -14,6 +15,7 @@ export function createApp(): Express {
   // body for signature verification (see features/auth/routes.ts).
   app.use(authRouter);
   app.use(express.json());
+  app.use(tutorsRouter);
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok" });
