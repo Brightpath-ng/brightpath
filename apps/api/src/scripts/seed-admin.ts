@@ -1,6 +1,7 @@
 import { createClerkClient } from "@clerk/backend";
 import { createSeedAdminService } from "../features/auth/seed-admin.js";
 import * as repository from "../features/auth/repository.js";
+import { findClerkUserByEmail, createClerkUser } from "../lib/clerk.js";
 
 // No dotenv loading here -- repository.js imports @brightpath/db, whose own
 // index.ts already loads the repo-root .env.local as a side effect (see the
@@ -26,19 +27,8 @@ async function main() {
     findRoleByName: repository.findRoleByName,
     upsertUserByClerkId: repository.upsertUserByClerkId,
     findOrCreateClerkUserByEmail: async (email, name) => {
-      const existing = await clerk.users.getUserList({ emailAddress: [email] });
-      if (existing.data[0]) {
-        return existing.data[0];
-      }
-      // This instance requires a password on user creation, but the admin
-      // signs in the same passwordless-email-code way as everyone else
-      // (apps/web's <SignIn> widget) -- skipPasswordRequirement omits it
-      // instead of generating one nobody will ever use.
-      return clerk.users.createUser({
-        emailAddress: [email],
-        firstName: name,
-        skipPasswordRequirement: true,
-      });
+      const existing = await findClerkUserByEmail(clerk, email);
+      return existing ?? createClerkUser(clerk, { email, firstName: name });
     },
     setClerkPublicMetadataRole: async (clerkId, role) => {
       await clerk.users.updateUserMetadata(clerkId, { publicMetadata: { role } });
