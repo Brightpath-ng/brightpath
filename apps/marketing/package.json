@@ -13,6 +13,7 @@
   "dependencies": {
     "@brightpath/types": "workspace:*",
     "@brightpath/ui": "workspace:*",
+    "@next/env": "15.1.4",
     "lucide-react": "^0.469.0",
     "next": "^15.1.4",
     "react": "^19.0.0",
