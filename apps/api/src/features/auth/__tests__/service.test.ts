@@ -88,4 +88,18 @@ describe("authService.handleUserCreated", () => {
 
     expect(deps.upsertUserByClerkId).not.toHaveBeenCalled();
   });
+
+  it("no-ops when the Clerk user already has a role set (created directly by the API)", async () => {
+    const deps = buildDeps();
+    const service = createAuthService(deps);
+
+    await service.handleUserCreated(
+      buildEvent({ public_metadata: { role: "tutor" } })
+    );
+
+    expect(deps.findDefaultTenant).not.toHaveBeenCalled();
+    expect(deps.findRoleByName).not.toHaveBeenCalled();
+    expect(deps.upsertUserByClerkId).not.toHaveBeenCalled();
+    expect(deps.setClerkPublicMetadataRole).not.toHaveBeenCalled();
+  });
 });

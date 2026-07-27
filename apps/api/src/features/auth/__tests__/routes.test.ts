@@ -101,6 +101,25 @@ describe("POST /webhooks/clerk", () => {
     expect(response.status).toBe(400);
   });
 
+  it("acknowledges but does not overwrite a role the API already set", async () => {
+    const { createApp } = await import("../../../app.js");
+    const { payload, headers } = signedRequest({
+      ...userCreatedEvent,
+      data: { ...userCreatedEvent.data, public_metadata: { role: "tutor" } },
+    });
+
+    const response = await request(createApp())
+      .post("/webhooks/clerk")
+      .set(headers)
+      .set("Content-Type", "application/json")
+      .send(payload);
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({ received: true, handled: true });
+    expect(repositoryMocks.upsertUserByClerkId).not.toHaveBeenCalled();
+    expect(updateUserMetadata).not.toHaveBeenCalled();
+  });
+
   it("acknowledges but ignores an event type it doesn't handle", async () => {
     const { createApp } = await import("../../../app.js");
     const { payload, headers } = signedRequest({ type: "user.updated", data: {} });
