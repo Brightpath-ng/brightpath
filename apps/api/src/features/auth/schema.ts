@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RoleNameSchema } from "@brightpath/types";
 
 // Only the fields this feature actually reads from Clerk's user.created event.
 // Clerk's real payload has many more fields; add them here if/when a feature
@@ -17,6 +18,10 @@ export const ClerkUserCreatedEventSchema = z.object({
     first_name: z.string().nullable(),
     last_name: z.string().nullable(),
     phone_numbers: z.array(z.object({ phone_number: z.string() })),
+    // Present when the API created this Clerk user directly (tutor
+    // applications, admin seeding) rather than a genuine self-serve sign-up
+    // -- see service.ts's handleUserCreated for why this matters.
+    public_metadata: z.object({ role: RoleNameSchema.optional() }).optional(),
   }),
 });
 

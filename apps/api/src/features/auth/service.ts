@@ -24,6 +24,16 @@ export function createAuthService(deps: AuthServiceDeps) {
   return {
     async handleUserCreated(event: ClerkUserCreatedEvent) {
       const { data } = event;
+
+      // A role already set means the API created this Clerk user directly
+      // with a specific role in mind (tutor applications, admin seeding via
+      // seed-admin.ts) -- not a genuine self-serve sign-up. Without this
+      // check, this webhook (async, arrives moments after creation) would
+      // silently overwrite that role back to "parent" below.
+      if (data.public_metadata?.role) {
+        return;
+      }
+
       const primaryEmail = data.email_addresses.find(
         (address) => address.id === data.primary_email_address_id
       );
