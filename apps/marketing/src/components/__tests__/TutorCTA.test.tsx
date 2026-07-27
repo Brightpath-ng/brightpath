@@ -13,7 +13,10 @@ describe("TutorCTA", () => {
 
   it("renders both CTAs", () => {
     render(<TutorCTA />);
-    expect(screen.getByRole("button", { name: "Apply to Teach" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Apply to Teach" })).toHaveAttribute(
+      "href",
+      "/become-a-tutor"
+    );
     expect(screen.getByRole("button", { name: "See How It Works" })).toBeInTheDocument();
   });
 
