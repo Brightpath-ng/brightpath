@@ -26,4 +26,20 @@ describe("DashboardShell", () => {
     render(<DashboardShell brandLabel="BrightPath" greeting="Hi" description="..." />);
     expect(screen.getByTestId("user-button")).toBeInTheDocument();
   });
+
+  it("renders children when provided", () => {
+    render(
+      <DashboardShell brandLabel="BrightPath" greeting="Hi" description="...">
+        <p>Custom content</p>
+      </DashboardShell>
+    );
+    expect(screen.getByText("Custom content")).toBeInTheDocument();
+  });
+
+  it("renders no extra content when children is omitted", () => {
+    const { container } = render(
+      <DashboardShell brandLabel="BrightPath" greeting="Hi" description="..." />
+    );
+    expect(container.textContent).not.toMatch(/Custom content/);
+  });
 });
