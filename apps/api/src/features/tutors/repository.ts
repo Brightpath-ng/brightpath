@@ -1,4 +1,4 @@
-import { prisma, type User, type TutorProfile } from "@brightpath/db";
+import { prisma, type User, type TutorProfile, type TutorApplicationStatus } from "@brightpath/db";
 
 // findDefaultTenant/findRoleByName are shared tenant/role primitives, not
 // auth-specific -- reused here rather than duplicating the same queries.
@@ -49,6 +49,32 @@ export function createUserWithTutorProfile(
   });
 }
 
-export function findTutorProfileByUserId(userId: string): Promise<TutorProfile | null> {
-  return prisma.tutorProfile.findUnique({ where: { userId } });
+// req.auth.userId (attached by the requireAuth/requireRole middleware) is the
+// Clerk id, not TutorProfile's own userId FK (the internal User.id) -- this
+// looks the profile up through the User.clerkId relation in one query.
+export function findTutorProfileByClerkId(clerkId: string): Promise<TutorProfile | null> {
+  return prisma.tutorProfile.findFirst({ where: { user: { clerkId } } });
+}
+
+export function findTutorProfileById(id: string): Promise<TutorProfile | null> {
+  return prisma.tutorProfile.findUnique({ where: { id } });
+}
+
+export type TutorApplicationSummaryRecord = TutorProfile & {
+  user: Pick<User, "name" | "email">;
+};
+
+export function listPendingTutorProfiles(): Promise<TutorApplicationSummaryRecord[]> {
+  return prisma.tutorProfile.findMany({
+    where: { status: "PENDING" },
+    include: { user: { select: { name: true, email: true } } },
+    orderBy: { createdAt: "asc" },
+  });
+}
+
+export function updateTutorProfileStatus(
+  id: string,
+  status: TutorApplicationStatus
+): Promise<TutorProfile> {
+  return prisma.tutorProfile.update({ where: { id }, data: { status } });
 }
