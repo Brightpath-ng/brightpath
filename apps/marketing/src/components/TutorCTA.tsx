@@ -30,12 +30,16 @@ export function TutorCTA() {
         </p>
 
         <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-          <Button
-            size="lg"
-            className="bg-[var(--mkt-section-dark)] text-[var(--mkt-text-on-dark)] hover:bg-[var(--mkt-section-dark)] hover:opacity-90"
+          <a
+            href="/become-a-tutor"
+            className={
+              "inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] " +
+              "px-5 text-sm font-medium transition-all duration-150 " +
+              "bg-[var(--mkt-section-dark)] text-[var(--mkt-text-on-dark)] hover:opacity-90"
+            }
           >
             Apply to Teach
-          </Button>
+          </a>
           <Button
             variant="outline"
             size="lg"
