@@ -30,7 +30,15 @@ async function main() {
       if (existing.data[0]) {
         return existing.data[0];
       }
-      return clerk.users.createUser({ emailAddress: [email], firstName: name });
+      // This instance requires a password on user creation, but the admin
+      // signs in the same passwordless-email-code way as everyone else
+      // (apps/web's <SignIn> widget) -- skipPasswordRequirement omits it
+      // instead of generating one nobody will ever use.
+      return clerk.users.createUser({
+        emailAddress: [email],
+        firstName: name,
+        skipPasswordRequirement: true,
+      });
     },
     setClerkPublicMetadataRole: async (clerkId, role) => {
       await clerk.users.updateUserMetadata(clerkId, { publicMetadata: { role } });
