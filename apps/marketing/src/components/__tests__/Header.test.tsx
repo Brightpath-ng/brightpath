@@ -24,7 +24,10 @@ describe("Header", () => {
       "/trust-safety"
     );
     expect(within(mainNav).getByRole("link", { name: "Blog" })).toHaveAttribute("href", "/blog");
-    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute("href", "/sign-in");
+    expect(screen.getByRole("link", { name: "Sign in" })).toHaveAttribute(
+      "href",
+      "http://localhost:3001/sign-in"
+    );
     expect(screen.getByRole("button", { name: "Find a Tutor" })).toBeInTheDocument();
   });
 

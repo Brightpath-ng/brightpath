@@ -8,6 +8,10 @@ interface QuickLink {
   icon: LucideIcon;
 }
 
+// apps/web is a separate deployed app (separate origin) -- a relative /sign-in
+// href would 404 here, so this always links out to web's own absolute URL.
+const signInHref = `${process.env.NEXT_PUBLIC_WEB_APP_URL ?? "http://localhost:3001"}/sign-in`;
+
 const quickLinks: QuickLink[] = [
   {
     title: "Book an Assessment",
@@ -20,7 +24,7 @@ const quickLinks: QuickLink[] = [
     title: "Track My Child's Progress",
     description: "See attendance, homework, and score trends in one dashboard.",
     linkLabel: "View dashboard",
-    href: "/sign-in",
+    href: signInHref,
     icon: TrendingUp,
   },
   {
@@ -34,7 +38,7 @@ const quickLinks: QuickLink[] = [
     title: "Find My Tutor's Report",
     description: "Read the latest lesson report filed after your child's session.",
     linkLabel: "See report",
-    href: "/sign-in",
+    href: signInHref,
     icon: FileSearch,
   },
 ];
