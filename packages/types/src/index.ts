@@ -17,3 +17,15 @@ export {
   type RoleName,
   type User,
 } from "./auth.js";
+
+export {
+  TUTOR_APPLICATION_STATUSES,
+  TutorApplicationStatusSchema,
+  TutorApplicationInputSchema,
+  TutorProfileSchema,
+  TutorApplicationSummarySchema,
+  type TutorApplicationStatus,
+  type TutorApplicationInput,
+  type TutorProfile,
+  type TutorApplicationSummary,
+} from "./tutors.js";

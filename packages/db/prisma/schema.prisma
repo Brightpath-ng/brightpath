@@ -21,7 +21,7 @@ model Tenant {
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  users     User[]
+  users User[]
 
   @@map("tenants")
 }
@@ -40,7 +40,7 @@ model Role {
   name        String   @unique
   permissions String[] @default([])
 
-  users       User[]
+  users User[]
 
   @@map("roles")
 }
@@ -59,10 +59,40 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  role      Role     @relation(fields: [roleId], references: [id])
+  tenant       Tenant        @relation(fields: [tenantId], references: [id])
+  role         Role          @relation(fields: [roleId], references: [id])
+  tutorProfile TutorProfile?
 
   @@index([tenantId])
   @@index([roleId])
   @@map("users")
+}
+
+// ── tutors ────────────────────────────────────────────────────────────────
+// A tutor applicant's Clerk user + this row are created together server-side
+// at application time (apps/api/src/features/tutors), not via self-serve
+// sign-up -- see that feature's service.ts for why. status is deliberately
+// PENDING/APPROVED/REJECTED rather than the blueprint's full 4-tier
+// verification_tier enum (Section 11.1): tiers don't correspond to any real
+// logic until the ID-verification/reference-checking follow-up slices exist.
+model TutorProfile {
+  id             String                 @id @default(cuid())
+  userId         String                 @unique
+  subjects       String[]
+  qualifications String
+  bio            String?
+  status         TutorApplicationStatus @default(PENDING)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([status])
+  @@map("tutor_profiles")
+}
+
+enum TutorApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
