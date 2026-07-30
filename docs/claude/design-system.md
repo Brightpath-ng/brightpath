@@ -118,9 +118,15 @@ ovoenergy.com's homepage — chosen deliberately, and specific elements were ado
   silently carrying it forward.)
 - **Cream base (`--mkt-bg-cream`, `#f9f5f0`), not white**, for light sections. Pure white is
   reserved for the nav bar and footer only.
-- **Pill buttons everywhere.** `apps/marketing/styles/theme.css` overrides `--radius-md` to
-  `--radius-full` so the shared `Button` primitive renders as a pill on this surface without a
-  separate component — same underlying behavior as the dashboard button, different shape.
+- **Buttons use the same normal radius as the dashboard** — pill buttons were tried (via a
+  `--radius-button` token override in `apps/marketing/styles/theme.css`, matching the OVO
+  reference) and then deliberately reverted; the token stays in `packages/ui/styles/core.css` for
+  a future surface-specific need, just unused today. Warmth on this surface comes from
+  photography, color, and type, not from button shape.
+- **Decorative pills stay pill-shaped** — the hero trust-signal stat, category tags
+  (`ProofCarousel`, `GuidesTeaser`), and the footer app-store badges are a separate visual
+  category from buttons and keep using `--radius-full` directly; only clickable CTAs (`Button`
+  and the handful of `<a>` elements styled to match it) changed.
 - **Alternating section rhythm** — light → dark → light → dark, never two of the same tone
   back to back. See the section order in `marketing-home-spec.md`.
 - **Trust signal inline, immediately under the hero CTA** — not buried in a later section.

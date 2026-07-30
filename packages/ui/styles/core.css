@@ -47,11 +47,13 @@
   --radius-2xl: 24px;
   --radius-full: 9999px;
 
-  /* Button's own radius, independent of --radius-md. A surface that wants
-     pill buttons (apps/marketing) overrides only this, not --radius-md
-     itself -- --radius-md is a general-purpose token other components
-     (Input, cards, etc.) also use, and they should never accidentally
-     inherit a "make buttons pills" decision made for Button alone. */
+  /* Button's own radius, independent of --radius-md. No surface currently
+     overrides this (apps/marketing's buttons use the same normal radius as
+     everywhere else) -- but if a future design wants a surface-specific
+     button shape again, it should override only this token, not
+     --radius-md itself. --radius-md is general-purpose (Input, cards,
+     etc. use it too), and a "make buttons look different" decision
+     leaking into those was a real bug once already. */
   --radius-button: var(--radius-md);
 
   /* Base shadow tokens — apps can add their own bolder variants on top */

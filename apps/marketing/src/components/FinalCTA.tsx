@@ -12,7 +12,7 @@ export function FinalCTA() {
         </div>
         <a
           href="/support"
-          className="shrink-0 rounded-[var(--radius-full)] px-6 py-3 text-sm font-semibold"
+          className="shrink-0 rounded-[var(--radius-button)] px-6 py-3 text-sm font-semibold"
           style={{ background: "var(--accent)", color: "var(--text-on-accent)" }}
         >
           Get help
