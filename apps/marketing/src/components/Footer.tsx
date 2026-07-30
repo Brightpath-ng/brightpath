@@ -103,7 +103,7 @@ export function Footer() {
             </span>
             <div className="flex items-center gap-3">
               <span
-                className="rounded-[var(--radius-md)] px-3 py-1.5 text-xs font-medium"
+                className="rounded-[var(--radius-full)] px-3 py-1.5 text-xs font-medium"
                 style={{
                   background: "var(--bg-elevated)",
                   color: "var(--text-tertiary)",
@@ -113,7 +113,7 @@ export function Footer() {
                 App Store — Coming soon
               </span>
               <span
-                className="rounded-[var(--radius-md)] px-3 py-1.5 text-xs font-medium"
+                className="rounded-[var(--radius-full)] px-3 py-1.5 text-xs font-medium"
                 style={{
                   background: "var(--bg-elevated)",
                   color: "var(--text-tertiary)",

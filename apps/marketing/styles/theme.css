@@ -59,12 +59,16 @@
   --amber-bg: rgba(217, 119, 6, 0.07);
   --amber-border: rgba(217, 119, 6, 0.25);
 
-  /* Marketing overrides packages/ui's default --radius-md-based Button
-     to a full pill — every marketing CTA, dark or light or outline,
-     should render as a pill, matching the OVO reference exactly.
-     (--radius-full itself is inherited unchanged from core.css — it's
-     already 9999px there, so it isn't redeclared here.) */
-  --radius-md: var(--radius-full);
+  /* Marketing overrides Button's own --radius-button token to a full pill
+     — every marketing CTA, dark or light or outline, should render as a
+     pill, matching the OVO reference exactly. Deliberately NOT overriding
+     --radius-md itself: that's the general-purpose token Input (and any
+     other non-Button component) also uses, and pill-shaping every text
+     input on the page was an unintended side effect the first time this
+     surface got a real form. (--radius-full itself is inherited unchanged
+     from core.css — it's already 9999px there, so it isn't redeclared
+     here.) */
+  --radius-button: var(--radius-full);
 
   /* ── Marketing-only tokens — never used outside apps/marketing ── */
   --mkt-bg-cream: #f9f5f0;

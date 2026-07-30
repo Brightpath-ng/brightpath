@@ -33,7 +33,7 @@ export function TutorCTA() {
           <a
             href="/become-a-tutor"
             className={
-              "inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-md)] " +
+              "inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-full)] " +
               "px-5 text-sm font-medium transition-all duration-150 " +
               "bg-[var(--mkt-section-dark)] text-[var(--mkt-text-on-dark)] hover:opacity-90"
             }
