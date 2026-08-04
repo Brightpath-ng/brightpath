@@ -1,0 +1,56 @@
+name: Seed production admin
+
+# Deliberately NOT triggered automatically -- creating a production admin is
+# a decision, not a side effect of a deploy. Only ever runs when someone
+# explicitly clicks "Run workflow" in the Actions tab (or `gh workflow run
+# seed-admin-production.yml`), the same pattern as migrate-production.yml.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "seed" to confirm you want to create/update an admin in PRODUCTION'
+        required: true
+      admin_email:
+        description: "Email address for the production admin account"
+        required: true
+      admin_name:
+        description: "Display name for the production admin account"
+        required: false
+        default: "BrightPath Admin"
+
+jobs:
+  seed-admin:
+    runs-on: ubuntu-latest
+    # Same protected "Production" GitHub Environment as migrate-production.yml
+    # -- required reviewer, case-sensitive name (see that workflow's comment
+    # for why the casing matters).
+    environment: Production
+    env:
+      DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+      CLERK_SECRET_KEY: ${{ secrets.PRODUCTION_CLERK_SECRET_KEY }}
+      ADMIN_SEED_EMAIL: ${{ inputs.admin_email }}
+      ADMIN_SEED_NAME: ${{ inputs.admin_name }}
+    steps:
+      - name: Verify confirmation input
+        if: inputs.confirm != 'seed'
+        run: |
+          echo "::error::Confirmation input must be exactly 'seed' -- got '${{ inputs.confirm }}'. Aborting without touching Clerk or the database."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @brightpath/db db:generate
+
+      - name: Seed admin
+        run: pnpm --filter @brightpath/api seed:admin
