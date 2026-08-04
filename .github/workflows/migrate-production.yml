@@ -52,6 +52,16 @@ jobs:
       - name: Generate Prisma client
         run: pnpm --filter @brightpath/db db:generate
 
+      # seed.ts imports @brightpath/types, which resolves via its
+      # package.json "exports" to ./dist/index.js -- `pnpm install` only
+      # installs dependencies, it doesn't build workspace packages, so
+      # without this the seed step below fails with ERR_MODULE_NOT_FOUND on
+      # a clean CI checkout (dist/ doesn't exist yet). Only @brightpath/types
+      # itself needs building here -- it's the only workspace dependency
+      # seed.ts imports, and it has no workspace deps of its own.
+      - name: Build shared types package
+        run: pnpm --filter @brightpath/types build
+
       # Informational only -- `prisma migrate status` exits non-zero whenever
       # ANY migration is unapplied, which is the normal, expected state every
       # single time this workflow runs (that's the whole reason to run it).
