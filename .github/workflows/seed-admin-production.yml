@@ -49,8 +49,21 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma client
-        run: pnpm --filter @brightpath/db db:generate
+      # seed-admin.ts runs directly from source via tsx, but it imports real
+      # (non-type-only) values from @brightpath/db (prisma) and
+      # @brightpath/types (DEFAULT_TENANT_NAME) -- both resolve through their
+      # package.json "exports" to ./dist/index.js, which `pnpm install`
+      # never builds on its own. `db:generate` alone only produces the
+      # Prisma client, not @brightpath/db's own dist/ -- same gap as
+      # migrate-production.yml hit with @brightpath/types (see that
+      # workflow's history), just one dependency deeper here.
+      #
+      # Using turbo's dependency-only filter (^...) instead of hand-picking
+      # packages again: it builds everything @brightpath/api actually
+      # depends on, in the correct order, so a future new workspace
+      # dependency doesn't require finding this exact gap a third time.
+      - name: Build workspace dependencies
+        run: pnpm turbo run build --filter=@brightpath/api^...
 
       - name: Seed admin
         run: pnpm --filter @brightpath/api seed:admin
