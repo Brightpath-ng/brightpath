@@ -65,3 +65,14 @@ jobs:
       # never resets/drops anything on drift.
       - name: Apply migrations
         run: pnpm --filter @brightpath/db exec prisma migrate deploy
+
+      # Migrations only create table structure, never data -- seed.ts is what
+      # inserts the "BrightPath Direct" Tenant row and the 4 Phase 1 Role
+      # rows every feature's findDefaultTenant()/findRoleByName() depends on.
+      # Nothing ever ran this against production before, which is exactly
+      # why P2025 "no record found" errors started showing up once real
+      # traffic (tutor applications, the Clerk webhook) hit those lookups.
+      # Safe to run on every invocation of this workflow: seed.ts is
+      # upsert-based, so re-running it after the first time is a no-op.
+      - name: Seed reference data (Tenant + Roles)
+        run: pnpm --filter @brightpath/db db:seed
