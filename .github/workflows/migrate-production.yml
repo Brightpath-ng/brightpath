@@ -49,18 +49,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate Prisma client
-        run: pnpm --filter @brightpath/db db:generate
-
-      # seed.ts imports @brightpath/types, which resolves via its
-      # package.json "exports" to ./dist/index.js -- `pnpm install` only
-      # installs dependencies, it doesn't build workspace packages, so
-      # without this the seed step below fails with ERR_MODULE_NOT_FOUND on
-      # a clean CI checkout (dist/ doesn't exist yet). Only @brightpath/types
-      # itself needs building here -- it's the only workspace dependency
-      # seed.ts imports, and it has no workspace deps of its own.
-      - name: Build shared types package
-        run: pnpm --filter @brightpath/types build
+      # `turbo run build --filter=@brightpath/db` builds @brightpath/db
+      # itself (prisma generate && tsc -- covers both the Prisma client the
+      # migrate/status steps below need, and the compiled dist/ seed.ts's
+      # @brightpath/types import needs) *and* its workspace dependencies
+      # (@brightpath/types) in the correct order. `pnpm install` alone never
+      # builds workspace packages, so without this, the seed step further
+      # down fails with ERR_MODULE_NOT_FOUND on a clean CI checkout.
+      - name: Build @brightpath/db and its dependencies
+        run: pnpm turbo run build --filter=@brightpath/db
 
       # Informational only -- `prisma migrate status` exits non-zero whenever
       # ANY migration is unapplied, which is the normal, expected state every
