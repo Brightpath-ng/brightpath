@@ -3,18 +3,31 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, type LucideIcon } from "lucide-react";
+import { Menu, X, LayoutDashboard, Users, CalendarDays, Receipt } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
+
+// Server Component layouts define nav items, but a raw component reference
+// (e.g. `icon: LayoutDashboard`) can't cross the Server -> Client boundary as
+// a plain prop -- only rendered JSX elements or Server Actions can. Layouts
+// pass an icon *name* instead, resolved against this client-side registry.
+const ICONS = {
+  LayoutDashboard,
+  Users,
+  CalendarDays,
+  Receipt,
+} as const;
+
+export type AppIconName = keyof typeof ICONS;
 
 export interface AppNavItem {
   label: string;
   href: string;
-  icon: LucideIcon;
+  icon: AppIconName;
 }
 
 export interface AppPlannedItem {
   label: string;
-  icon: LucideIcon;
+  icon: AppIconName;
 }
 
 interface AppShellProps {
@@ -75,7 +88,7 @@ export function AppShell({
         <nav className="flex flex-col gap-0.5" aria-label="Main">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
-            const Icon = item.icon;
+            const Icon = ICONS[item.icon];
             return (
               <Link
                 key={item.href}
@@ -98,7 +111,7 @@ export function AppShell({
         {plannedItems.length > 0 ? (
           <nav className="mt-1 flex flex-col gap-0.5" aria-label="Planned">
             {plannedItems.map((item) => {
-              const Icon = item.icon;
+              const Icon = ICONS[item.icon];
               return (
                 <div
                   key={item.label}
