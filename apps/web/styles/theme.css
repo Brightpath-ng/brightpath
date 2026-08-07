@@ -56,17 +56,16 @@
   --amber-bg: rgba(217, 119, 6, 0.07);
   --amber-border: rgba(217, 119, 6, 0.25);
 
-  /* Shadows */
-  --shadow-card: var(--shadow-card);
-  --shadow-elevated: var(--shadow-elevated);
+  /* Shadows — --shadow-card/--shadow-elevated inherit as-is from core.css
+     (imported above); only the dashboard's own accent shadow is added here.
+     (These used to be redeclared as `var(--shadow-card)` etc. — a
+     self-reference that's invalid at computed-value time per the CSS
+     custom-properties spec, silently dropping every shadow in the app.) */
   --shadow-accent: 0 6px 20px rgba(31, 122, 92, 0.35);
 
-  /* Radius — dashboard uses the restrained end of the scale */
-  --radius-sm: var(--radius-sm);
-  --radius-md: var(--radius-md);
-  --radius-lg: var(--radius-lg);
-  --radius-xl: var(--radius-xl);
-  --radius-full: var(--radius-full);
+  /* Radius — the full scale inherits as-is from core.css (imported above);
+     the dashboard doesn't override any of it. (Same self-reference bug as
+     the shadows above used to zero out every border-radius in the app.) */
 }
 
 @layer base {
@@ -110,5 +109,37 @@
   ::-webkit-scrollbar-thumb {
     background: var(--bg-border);
     border-radius: 3px;
+  }
+}
+
+@layer components {
+  /* Shared skeleton shimmer -- a moving highlight sweep across a placeholder
+     block, not a flat opacity pulse, matching the loading pattern GitHub/
+     Linear/Notion use for content-shaped skeletons. */
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--bg-elevated) 25%,
+      var(--bg-border-subtle) 37%,
+      var(--bg-elevated) 63%
+    );
+    background-size: 400% 100%;
+    animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton {
+      animation: none;
+      background: var(--bg-elevated);
+    }
+  }
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
