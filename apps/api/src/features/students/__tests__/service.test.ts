@@ -1,7 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import type { StudentProfile } from "@brightpath/db";
 import type { AddStudentInput } from "@brightpath/types";
-import { createStudentsService, ParentNotFoundError, type StudentsServiceDeps } from "../service.js";
+import {
+  createStudentsService,
+  ParentNotFoundError,
+  StudentNotFoundError,
+  type StudentsServiceDeps,
+} from "../service.js";
 
 function buildInput(overrides: Partial<AddStudentInput> = {}): AddStudentInput {
   return {
@@ -31,6 +36,8 @@ function buildDeps(overrides: Partial<StudentsServiceDeps> = {}): StudentsServic
     findUserByClerkId: vi.fn().mockResolvedValue({ id: "db_user_1" }),
     createStudentProfile: vi.fn().mockResolvedValue(buildProfile()),
     listStudentProfilesByParentId: vi.fn().mockResolvedValue([]),
+    findStudentProfileById: vi.fn().mockResolvedValue(buildProfile()),
+    updateStudentProfile: vi.fn().mockResolvedValue(buildProfile()),
     ...overrides,
   };
 }
@@ -108,5 +115,90 @@ describe("studentsService.listMyStudents", () => {
 
     await expect(service.listMyStudents("clerk_user_1")).rejects.toThrow(ParentNotFoundError);
     expect(deps.listStudentProfilesByParentId).not.toHaveBeenCalled();
+  });
+});
+
+describe("studentsService.getStudent", () => {
+  it("returns the student when it belongs to the caller", async () => {
+    const deps = buildDeps();
+    const service = createStudentsService(deps);
+
+    const result = await service.getStudent("clerk_user_1", "student_profile_1");
+
+    expect(deps.findStudentProfileById).toHaveBeenCalledWith("student_profile_1");
+    expect(result).toEqual(buildProfile());
+  });
+
+  it("throws StudentNotFoundError when no student has that id", async () => {
+    const deps = buildDeps({ findStudentProfileById: vi.fn().mockResolvedValue(null) });
+    const service = createStudentsService(deps);
+
+    await expect(service.getStudent("clerk_user_1", "nope")).rejects.toThrow(
+      StudentNotFoundError
+    );
+  });
+
+  it("throws StudentNotFoundError when the student belongs to a different parent", async () => {
+    const deps = buildDeps({
+      findStudentProfileById: vi.fn().mockResolvedValue(buildProfile({ parentId: "someone_else" })),
+    });
+    const service = createStudentsService(deps);
+
+    await expect(service.getStudent("clerk_user_1", "student_profile_1")).rejects.toThrow(
+      StudentNotFoundError
+    );
+  });
+
+  it("throws ParentNotFoundError when the caller has no User row", async () => {
+    const deps = buildDeps({ findUserByClerkId: vi.fn().mockResolvedValue(null) });
+    const service = createStudentsService(deps);
+
+    await expect(service.getStudent("clerk_user_1", "student_profile_1")).rejects.toThrow(
+      ParentNotFoundError
+    );
+    expect(deps.findStudentProfileById).not.toHaveBeenCalled();
+  });
+});
+
+describe("studentsService.updateStudent", () => {
+  it("updates the student when it belongs to the caller", async () => {
+    const deps = buildDeps();
+    const service = createStudentsService(deps);
+
+    await service.updateStudent(
+      "clerk_user_1",
+      "student_profile_1",
+      buildInput({ school: "New School" })
+    );
+
+    expect(deps.updateStudentProfile).toHaveBeenCalledWith("student_profile_1", {
+      name: "Ada Lovelace",
+      school: "New School",
+      class: null,
+      learningGoals: null,
+      learningChallenges: null,
+    });
+  });
+
+  it("throws StudentNotFoundError when the student belongs to a different parent", async () => {
+    const deps = buildDeps({
+      findStudentProfileById: vi.fn().mockResolvedValue(buildProfile({ parentId: "someone_else" })),
+    });
+    const service = createStudentsService(deps);
+
+    await expect(
+      service.updateStudent("clerk_user_1", "student_profile_1", buildInput())
+    ).rejects.toThrow(StudentNotFoundError);
+    expect(deps.updateStudentProfile).not.toHaveBeenCalled();
+  });
+
+  it("throws ParentNotFoundError when the caller has no User row", async () => {
+    const deps = buildDeps({ findUserByClerkId: vi.fn().mockResolvedValue(null) });
+    const service = createStudentsService(deps);
+
+    await expect(
+      service.updateStudent("clerk_user_1", "student_profile_1", buildInput())
+    ).rejects.toThrow(ParentNotFoundError);
+    expect(deps.updateStudentProfile).not.toHaveBeenCalled();
   });
 });
