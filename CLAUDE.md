@@ -9,6 +9,7 @@ inline. Claude Code resolves `@` imports automatically.
 @docs/claude/architecture.md
 @docs/claude/sdlc.md
 @docs/claude/design-system.md
+@docs/claude/ux-patterns.md
 @docs/claude/testing.md
 @docs/claude/environments.md
 
