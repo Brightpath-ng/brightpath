@@ -21,36 +21,21 @@ export function StudentsList({ students }: StudentsListProps) {
   }
 
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col divide-y divide-[var(--bg-border-subtle)]">
       {students.map((student) => (
-        <li
-          key={student.id}
-          className="flex flex-col gap-2 rounded-[var(--radius-md)] border p-4"
-          style={{ borderColor: "var(--bg-border)" }}
-        >
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                {student.name}
-              </p>
-              {student.school || student.class ? (
-                <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-                  {[student.school, student.class].filter(Boolean).join(" · ")}
-                </p>
-              ) : null}
-            </div>
-            <Badge className="shrink-0">{TRACK_LABELS[student.learningTrack]}</Badge>
+        <li key={student.id} className="flex items-center gap-3.5 py-4">
+          <div
+            className="flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold"
+            style={{ background: "var(--accent-dim)", color: "var(--accent)" }}
+          >
+            {student.name.charAt(0).toUpperCase()}
           </div>
-          {student.learningGoals ? (
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              Goals: {student.learningGoals}
-            </p>
-          ) : null}
-          {student.learningChallenges ? (
-            <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-              Challenges: {student.learningChallenges}
-            </p>
-          ) : null}
+          <p className="flex-1 truncate text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+            {student.name}
+          </p>
+          <Badge variant="accent" className="shrink-0">
+            {TRACK_LABELS[student.learningTrack]}
+          </Badge>
         </li>
       ))}
     </ul>
