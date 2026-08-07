@@ -43,8 +43,10 @@
   --accent-light: var(--brand-green-300);
   --accent-dim: rgba(31, 122, 92, 0.09);
   --accent-border: rgba(31, 122, 92, 0.2);
-  --shadow-card: var(--shadow-card);
-  --shadow-elevated: var(--shadow-elevated);
+  /* --shadow-card/--shadow-elevated inherit as-is from core.css (imported
+     above) -- they used to be redeclared here as `var(--shadow-card)` etc.,
+     a self-reference that's invalid at computed-value time per the CSS
+     custom-properties spec, silently dropping both shadows everywhere. */
   --shadow-accent: 0 6px 20px rgba(31, 122, 92, 0.35);
 
   /* Semantic — inherited so cross-surface primitives (Badge, etc.) resolve
