@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { LayoutDashboard, Users } from "lucide-react";
 
 vi.mock("@clerk/nextjs", () => ({
   UserButton: () => <div data-testid="user-button" />,
@@ -28,11 +27,11 @@ vi.mock("next/link", () => ({
 const { AppShell } = await import("../AppShell.js");
 
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/parent", icon: LayoutDashboard },
-  { label: "My Students", href: "/parent/students", icon: Users },
+  { label: "Dashboard", href: "/parent", icon: "LayoutDashboard" as const },
+  { label: "My Students", href: "/parent/students", icon: "Users" as const },
 ];
 
-const PLANNED_ITEMS = [{ label: "Lessons", icon: Users }];
+const PLANNED_ITEMS = [{ label: "Lessons", icon: "Users" as const }];
 
 describe("AppShell", () => {
   it("renders the brand label and nav items", () => {
