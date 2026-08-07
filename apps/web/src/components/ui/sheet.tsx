@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 
 type SheetProps = {
@@ -14,6 +14,9 @@ type SheetProps = {
 
 export function Sheet({ open, onClose, title, description, children, width = "md" }: SheetProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+  const titleId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -23,9 +26,14 @@ export function Sheet({ open, onClose, title, description, children, width = "md
     }
     document.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
+
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+
     return () => {
       document.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
+      previouslyFocusedRef.current?.focus();
     };
   }, [open, onClose]);
 
@@ -39,6 +47,7 @@ export function Sheet({ open, onClose, title, description, children, width = "md
     <>
       <div
         ref={overlayRef}
+        aria-hidden="true"
         className="fixed inset-0 z-50"
         style={{
           background: "rgba(13,13,26,0.5)",
@@ -53,7 +62,13 @@ export function Sheet({ open, onClose, title, description, children, width = "md
       />
 
       <div
-        className="fixed top-0 right-0 bottom-0 z-50 flex flex-col"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        aria-hidden={!open}
+        tabIndex={-1}
+        className="fixed top-0 right-0 bottom-0 z-50 flex flex-col outline-none"
         style={{
           width: widths[width],
           maxWidth: "100vw",
@@ -70,6 +85,7 @@ export function Sheet({ open, onClose, title, description, children, width = "md
         >
           <div className="space-y-0.5 pr-8">
             <h2
+              id={titleId}
               className="text-base font-semibold"
               style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}
             >
@@ -83,6 +99,7 @@ export function Sheet({ open, onClose, title, description, children, width = "md
           </div>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="p-1.5 rounded-lg transition-colors shrink-0"
             style={{ color: "var(--text-tertiary)" }}
             onMouseEnter={(e) => {

@@ -85,7 +85,11 @@ type ToastContainerProps = {
 export function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
   if (toasts.length === 0) return null;
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 items-end">
+    <div
+      role="status"
+      aria-live="polite"
+      className="fixed bottom-6 right-6 z-[100] flex flex-col gap-2 items-end"
+    >
       {toasts.map((t) => (
         <Toast key={t.id} message={t.message} variant={t.variant} onDismiss={() => onDismiss(t.id)} />
       ))}

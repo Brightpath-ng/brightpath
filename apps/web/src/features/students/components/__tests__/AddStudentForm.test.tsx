@@ -64,4 +64,14 @@ describe("AddStudentForm", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent(/couldn't add/i);
   });
+
+  it("calls onSuccess after a successful submission", async () => {
+    const onSuccess = vi.fn();
+    render(<AddStudentForm onSuccess={onSuccess} />);
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Chidinma" } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Add child" }));
+
+    await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
+  });
 });
