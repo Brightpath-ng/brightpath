@@ -9,6 +9,13 @@ export function findRoleByName(name: RoleName): Promise<Role> {
   return prisma.role.findUniqueOrThrow({ where: { name } });
 }
 
+// req.auth.userId (attached by requireAuth/requireRole) is the Clerk id, not
+// User's own internal id -- any feature that needs to write against the
+// caller's own User row (not just check their role) needs this first.
+export function findUserByClerkId(clerkId: string): Promise<User | null> {
+  return prisma.user.findUnique({ where: { clerkId } });
+}
+
 export interface UpsertUserInput {
   clerkId: string;
   tenantId: string;
