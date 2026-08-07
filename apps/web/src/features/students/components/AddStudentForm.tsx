@@ -11,7 +11,11 @@ const textareaClassName =
   "placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] " +
   "focus:ring-2 focus:ring-[var(--accent-dim)]";
 
-export function AddStudentForm() {
+interface AddStudentFormProps {
+  onSuccess?: () => void;
+}
+
+export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
   const [studentClass, setStudentClass] = useState("");
@@ -49,6 +53,7 @@ export function AddStudentForm() {
         setStudentClass("");
         setLearningGoals("");
         setLearningChallenges("");
+        onSuccess?.();
       } catch {
         setError("Couldn't add this child. Please try again.");
       }
@@ -57,10 +62,6 @@ export function AddStudentForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <h2 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-        Add a child
-      </h2>
-
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="studentName">Name</Label>

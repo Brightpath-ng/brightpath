@@ -1,18 +1,17 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { DashboardShell } from "@/components/DashboardShell";
+import { PageHeader } from "@/components/PageHeader";
 
 export default async function ParentDashboardPage() {
   const user = await currentUser();
 
   return (
-    <DashboardShell
-      brandLabel="BrightPath"
-      greeting={`Welcome, ${user?.firstName ?? "there"}`}
-      description="Your child's assigned tutor, upcoming lessons, and progress will land here."
-    >
-      <a href="/parent/students" className="text-sm font-medium" style={{ color: "var(--accent)" }}>
-        Manage my students →
-      </a>
-    </DashboardShell>
+    <>
+      <PageHeader title={`Welcome, ${user?.firstName ?? "there"}`} description="Your dashboard." />
+      <div className="p-8">
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+          Your child&rsquo;s assigned tutor, upcoming lessons, and progress will land here.
+        </p>
+      </div>
+    </>
   );
 }

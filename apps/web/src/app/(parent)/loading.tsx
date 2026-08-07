@@ -1,5 +1,5 @@
 import { AppShellLoading } from "@/components/AppShellLoading";
 
-export default function ParentStudentsLoading() {
+export default function ParentLoading() {
   return <AppShellLoading />;
 }
