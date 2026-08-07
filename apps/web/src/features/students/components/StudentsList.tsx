@@ -30,9 +30,16 @@ export function StudentsList({ students }: StudentsListProps) {
           >
             {student.name.charAt(0).toUpperCase()}
           </div>
-          <p className="flex-1 truncate text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-            {student.name}
-          </p>
+          <div className="flex min-w-0 flex-1 flex-col">
+            <p className="truncate text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+              {student.name}
+            </p>
+            {student.school || student.class ? (
+              <p className="truncate text-xs" style={{ color: "var(--text-tertiary)" }}>
+                {[student.school, student.class].filter(Boolean).join(" · ")}
+              </p>
+            ) : null}
+          </div>
           <Badge variant="accent" className="shrink-0">
             {TRACK_LABELS[student.learningTrack]}
           </Badge>

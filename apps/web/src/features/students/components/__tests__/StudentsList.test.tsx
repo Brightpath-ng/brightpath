@@ -25,11 +25,17 @@ describe("StudentsList", () => {
     expect(screen.getByText("No children added yet.")).toBeInTheDocument();
   });
 
-  it("renders each student's name, initial, and learning track", () => {
+  it("renders each student's name, initial, school/class, and learning track", () => {
     render(<StudentsList students={[buildStudent()]} />);
     expect(screen.getByText("Amaka Obi")).toBeInTheDocument();
     expect(screen.getByText("A")).toBeInTheDocument();
+    expect(screen.getByText("Corona School · JSS 2")).toBeInTheDocument();
     expect(screen.getByText("Tutor-led")).toBeInTheDocument();
+  });
+
+  it("omits the school/class line when neither is set", () => {
+    render(<StudentsList students={[buildStudent({ school: null, class: null })]} />);
+    expect(screen.queryByText(/Corona School/)).not.toBeInTheDocument();
   });
 
   it("renders one row per student", () => {
