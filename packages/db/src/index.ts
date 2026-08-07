@@ -10,6 +10,8 @@ export type {
   TenantType,
   TutorProfile,
   TutorApplicationStatus,
+  StudentProfile,
+  LearningTrack,
 } from "../generated/client/index.js";
 
 // This monorepo keeps a single .env.local at the repo root (matching the committed
