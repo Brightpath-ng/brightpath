@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
-import { Button } from "@brightpath/ui";
 
 interface NavLink {
   label: string;
@@ -19,6 +18,13 @@ const navLinks: NavLink[] = [
 // apps/web is a separate deployed app (separate origin) -- a relative /sign-in
 // href would 404 here, so this always links out to web's own absolute URL.
 const signInHref = `${process.env.NEXT_PUBLIC_WEB_APP_URL ?? "http://localhost:3001"}/sign-in`;
+
+// No dedicated tutor-search page exists yet -- "Find a Tutor" is the parent-facing
+// CTA, so it goes to the same parent sign-in/sign-up flow as "Sign in" does.
+const findTutorLinkClassName =
+  "inline-flex h-9 items-center justify-center gap-2 rounded-[var(--radius-button)] " +
+  "px-4 text-sm font-medium text-white transition-all duration-150 " +
+  "bg-[var(--accent)] hover:bg-[var(--accent-hover)]";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -50,7 +56,9 @@ export function Header() {
           <a href={signInHref} className="text-sm font-medium" style={{ color: "var(--text-secondary)" }}>
             Sign in
           </a>
-          <Button size="md">Find a Tutor</Button>
+          <a href={signInHref} className={findTutorLinkClassName}>
+            Find a Tutor
+          </a>
         </div>
 
         <button
@@ -94,9 +102,9 @@ export function Header() {
           >
             Sign in
           </a>
-          <Button size="md" className="mt-2 w-full">
+          <a href={signInHref} className={`${findTutorLinkClassName} mt-2 w-full`}>
             Find a Tutor
-          </Button>
+          </a>
         </nav>
       ) : null}
     </header>
