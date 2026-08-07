@@ -28,7 +28,10 @@ describe("Header", () => {
       "href",
       "http://localhost:3001/sign-in"
     );
-    expect(screen.getByRole("button", { name: "Find a Tutor" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Find a Tutor" })).toHaveAttribute(
+      "href",
+      "http://localhost:3001/sign-in"
+    );
   });
 
   it("keeps the mobile menu closed by default", () => {

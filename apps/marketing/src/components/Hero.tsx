@@ -1,4 +1,6 @@
-import { Button } from "@brightpath/ui";
+// apps/web is a separate deployed app (separate origin) -- a relative /sign-in
+// href would 404 here, so this always links out to web's own absolute URL.
+const signInHref = `${process.env.NEXT_PUBLIC_WEB_APP_URL ?? "http://localhost:3001"}/sign-in`;
 
 export function Hero() {
   return (
@@ -29,19 +31,26 @@ export function Hero() {
         </p>
 
         <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-          <Button
-            size="lg"
-            className="bg-[var(--mkt-section-dark)] text-[var(--mkt-text-on-dark)] hover:bg-[var(--mkt-section-dark)] hover:opacity-90"
+          <a
+            href={signInHref}
+            className={
+              "inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-button)] " +
+              "px-5 text-sm font-medium transition-all duration-150 " +
+              "bg-[var(--mkt-section-dark)] text-[var(--mkt-text-on-dark)] hover:opacity-90"
+            }
           >
             Find a Tutor
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            className="border-[var(--mkt-text-on-dark)] text-[var(--mkt-text-on-dark)] hover:bg-white/10"
+          </a>
+          <a
+            href="/become-a-tutor"
+            className={
+              "inline-flex h-10 items-center justify-center gap-2 rounded-[var(--radius-button)] " +
+              "border px-5 text-sm font-medium transition-all duration-150 " +
+              "border-[var(--mkt-text-on-dark)] text-[var(--mkt-text-on-dark)] hover:bg-white/10"
+            }
           >
             Become a Tutor
-          </Button>
+          </a>
         </div>
 
         <div

@@ -13,8 +13,14 @@ describe("Hero", () => {
 
   it("renders both CTAs", () => {
     render(<Hero />);
-    expect(screen.getByRole("button", { name: "Find a Tutor" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Become a Tutor" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Find a Tutor" })).toHaveAttribute(
+      "href",
+      "http://localhost:3001/sign-in"
+    );
+    expect(screen.getByRole("link", { name: "Become a Tutor" })).toHaveAttribute(
+      "href",
+      "/become-a-tutor"
+    );
   });
 
   it("renders the inline trust badge", () => {
