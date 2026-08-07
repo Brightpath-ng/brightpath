@@ -59,9 +59,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tenant       Tenant        @relation(fields: [tenantId], references: [id])
-  role         Role          @relation(fields: [roleId], references: [id])
-  tutorProfile TutorProfile?
+  tenant          Tenant           @relation(fields: [tenantId], references: [id])
+  role            Role             @relation(fields: [roleId], references: [id])
+  tutorProfile    TutorProfile?
+  studentProfiles StudentProfile[]
 
   @@index([tenantId])
   @@index([roleId])
@@ -95,4 +96,37 @@ enum TutorApplicationStatus {
   PENDING
   APPROVED
   REJECTED
+}
+
+// ── students ──────────────────────────────────────────────────────────────
+// A child is a profile the parent manages on their own account, not a
+// separate Clerk login (blueprint §7.2, §14: "RBAC from day one, even with
+// only 3 roles active") -- the `student` role and its dashboard route exist
+// but stay unused in Phase 1. learningTrack defaults to tutor_led and isn't
+// parent-selectable yet: real track routing is driven by the baseline
+// assessment (blueprint §7.1), which doesn't exist yet -- storing the field
+// now (per §6.4's explicit instruction) avoids a schema change later without
+// building assessment logic that has nothing real to compute yet.
+model StudentProfile {
+  id                 String        @id @default(cuid())
+  parentId           String
+  name               String
+  school             String?
+  class              String?
+  learningGoals      String?
+  learningChallenges String?
+  learningTrack      LearningTrack @default(tutor_led)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  parent User @relation(fields: [parentId], references: [id])
+
+  @@index([parentId])
+  @@map("student_profiles")
+}
+
+enum LearningTrack {
+  tutor_led
+  hybrid
+  self_directed
 }
