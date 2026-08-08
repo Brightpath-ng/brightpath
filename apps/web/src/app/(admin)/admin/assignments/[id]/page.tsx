@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { getAssignment } from "@/features/assignments/api/get-assignment";
 import { AssignmentDetail } from "@/features/assignments/components/AssignmentDetail";
@@ -28,7 +29,15 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
                 studentName={assignment.student.name}
                 tutorName={assignment.tutor.name}
               />
-            ) : undefined
+            ) : (
+              <Link
+                href={`/admin/assignments/new?studentId=${assignment.student.id}`}
+                className="inline-block rounded-[var(--radius-md)] px-4 py-2 text-sm font-medium"
+                style={{ background: "var(--accent)", color: "var(--text-on-accent)" }}
+              >
+                Reassign
+              </Link>
+            )
           }
         />
         <div className="p-8">

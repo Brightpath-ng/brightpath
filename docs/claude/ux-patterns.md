@@ -63,19 +63,27 @@ This doesn't retire `Sheet` or `Modal` — it scopes them correctly:
 If a future feature seems to want a form in a `Sheet` again, that's a sign to re-read this section
 before reaching for it, not a sign the rule doesn't apply this time.
 
-## Lists — three shapes, picked by what the entity *is*
+## Lists — two shapes, picked by what the entity *is*
 
-**Row-list (divided rows)** — the default for records that aren't people: a hairline divider
-between rows (`divide-y`), not a bordered card per item.
+**Table** — the default for records that aren't people: real `<table>` markup via the shared
+`Table`/`TableHeader`/`TableBody`/`TableRow`/`TableHead`/`TableCell` primitives
+(`apps/web/src/components/ui/table.tsx`), bordered container, uppercase tertiary column headers,
+right-aligned numeric columns with `font-variant-numeric: tabular-nums`. This replaced an earlier
+divided-row-list pattern — every table-shaped list in the app now shares the same primitive rather
+than each feature hand-rolling its own bordered/divided markup, so they stay visually and
+structurally consistent as more land (Ledger, audit log, disputes, ...). `AssignmentsList` and
+`TutorApplicationsList` are the reference implementations. Use `Table` for any entity whose most
+important info is "a name plus a few attributes" and that reads as a record, not a person — an
+application, an assignment, a dispute, a notification, and any genuinely columnar/numeric data
+(Ledger entries, audit log rows).
 
-```
-[avatar/icon]  Primary text (bold)         [Badge]
-               Muted meta line (optional)
-```
-
-`TutorApplicationsList` is the reference. Use this for any entity whose most important info is "a
-name plus a few attributes" and that reads as a record, not a person — an application, a dispute,
-a notification.
+Because `<a>` can't legally wrap a `<tr>`, a navigable table row is a Client Component: the row
+gets an `onClick` (`router.push`) for "click anywhere," and the primary cell additionally wraps its
+text in a real `<Link>` (with `stopPropagation` so it doesn't double-navigate) so the row stays
+keyboard-reachable and middle-click/open-in-new-tab still works — see `AssignmentsList` for the
+pattern. Not every table needs to navigate: `TutorApplicationsList`'s rows have no detail page, so
+its `TableRow`s carry no `onClick` and the actions live in a plain `Actions` column instead (see
+"Row-level inline actions" below).
 
 **Person-card grid** — for entities that represent people the user directly manages (a parent's
 children today; possibly tutors-you-work-with later): bordered card, circular avatar (a generic
@@ -83,16 +91,10 @@ person-silhouette placeholder until photo upload exists, then the real photo) ce
 name + a couple of secondary details below, learning-track-style `Badge` if relevant. Grid layout,
 not a list. Include a dashed "add new" tile as the grid's last item (Netflix/Google Family Link's
 "Add Profile" convention) alongside — not instead of — the page header's create button.
-`StudentsList` is the reference. The tell for reaching for this instead of a row-list: does this
+`StudentsList` is the reference. The tell for reaching for this instead of `Table`: does this
 record represent a human being the user has a relationship with, not just data about one? A
 `StudentProfile` does. A `TutorApplication` (a pending decision *about* a person) doesn't — it's a
 queue item, not a profile.
-
-**Table** — columnar/tabular data: Ledger entries, audit log rows, anything with many aligned
-numeric/date fields that don't reduce to "avatar + name + badge." Real `<table>`, column headers,
-right-aligned numeric columns with `font-variant-numeric: tabular-nums`. Nothing needs this yet, so
-there's no `Table` component to build today — build one when the Ledger module starts, don't
-stretch the row-list or card-grid pattern to fit data neither was shaped for.
 
 Whichever shape: once a `[id]` detail route exists for that entity, **rows/cards become links to
 it** — add a hover state so the affordance is obvious before the click, not a surprise after.

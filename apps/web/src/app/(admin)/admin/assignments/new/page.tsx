@@ -4,7 +4,13 @@ import { listAllStudentsForPicker } from "@/features/assignments/api/list-studen
 import { listApprovedTutorsForPicker } from "@/features/assignments/api/list-tutors-for-picker";
 import { AssignmentForm } from "@/features/assignments/components/AssignmentForm";
 
-export default async function NewAssignmentPage() {
+interface NewAssignmentPageProps {
+  searchParams: Promise<{ studentId?: string }>;
+}
+
+export default async function NewAssignmentPage({ searchParams }: NewAssignmentPageProps) {
+  const { studentId } = await searchParams;
+
   try {
     const [students, tutors, assignments] = await Promise.all([
       listAllStudentsForPicker(),
@@ -20,7 +26,12 @@ export default async function NewAssignmentPage() {
           backLabel="Matching"
         />
         <div className="p-8">
-          <AssignmentForm students={students} tutors={tutors} assignments={assignments} />
+          <AssignmentForm
+            students={students}
+            tutors={tutors}
+            assignments={assignments}
+            initialStudentId={studentId}
+          />
         </div>
       </>
     );

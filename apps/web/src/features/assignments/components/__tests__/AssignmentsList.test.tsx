@@ -1,7 +1,13 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import type { Assignment } from "@brightpath/types";
-import { AssignmentsList } from "../AssignmentsList";
+
+const push = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push }),
+}));
+
+const { AssignmentsList } = await import("../AssignmentsList.js");
 
 function buildAssignment(overrides: Partial<Assignment> = {}): Assignment {
   return {
@@ -19,6 +25,10 @@ function buildAssignment(overrides: Partial<Assignment> = {}): Assignment {
 }
 
 describe("AssignmentsList", () => {
+  beforeEach(() => {
+    push.mockReset();
+  });
+
   it("shows an empty state with a create CTA when there are no assignments", () => {
     render(<AssignmentsList assignments={[]} />);
     expect(screen.getByText("No assignments yet.")).toBeInTheDocument();
@@ -28,8 +38,9 @@ describe("AssignmentsList", () => {
     );
   });
 
-  it("renders the student and tutor names and an Active badge", () => {
+  it("renders the pairing as a table with the student, tutor, and an Active badge", () => {
     render(<AssignmentsList assignments={[buildAssignment()]} />);
+    expect(screen.getByRole("table")).toBeInTheDocument();
     expect(screen.getByText(/Amaka Obi/)).toBeInTheDocument();
     expect(screen.getByText(/Ngozi Adeyemi/)).toBeInTheDocument();
     expect(screen.getByText("Active")).toBeInTheDocument();
@@ -44,11 +55,19 @@ describe("AssignmentsList", () => {
     expect(screen.getByText("Ended")).toBeInTheDocument();
   });
 
-  it("links each row to the assignment's detail page", () => {
+  it("links the pairing to the assignment's detail page", () => {
     render(<AssignmentsList assignments={[buildAssignment()]} />);
     expect(screen.getByRole("link", { name: /Amaka Obi/ })).toHaveAttribute(
       "href",
       "/admin/assignments/assignment_1"
     );
+  });
+
+  it("navigates to the detail page when the row itself is clicked", () => {
+    render(<AssignmentsList assignments={[buildAssignment()]} />);
+
+    fireEvent.click(screen.getByText("Active"));
+
+    expect(push).toHaveBeenCalledWith("/admin/assignments/assignment_1");
   });
 });
