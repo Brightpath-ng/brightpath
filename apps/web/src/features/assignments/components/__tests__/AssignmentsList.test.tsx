@@ -20,6 +20,7 @@ function buildAssignment(overrides: Partial<Assignment> = {}): Assignment {
     updatedAt: "2026-01-01T00:00:00.000Z",
     student: { id: "student_1", name: "Amaka Obi" },
     tutor: { id: "tutor_1", name: "Ngozi Adeyemi", subjects: ["Mathematics"] },
+    assignedBy: { id: "admin_user_1", name: "Femi Adisa" },
     ...overrides,
   };
 }

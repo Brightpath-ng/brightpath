@@ -45,6 +45,7 @@ const assignment = {
   updatedAt: now,
   student: { id: "student_profile_1", name: "Amaka Obi" },
   tutor: { id: "tutor_profile_1", subjects: ["Mathematics"], user: { name: "Ngozi Adeyemi" } },
+  assignedBy: { id: "admin_user_1", name: "Femi Adisa" },
 };
 
 const repositoryMocks = {
@@ -111,6 +112,7 @@ describe("POST /assignments", () => {
       status: "ACTIVE",
       student: { id: "student_profile_1", name: "Amaka Obi" },
       tutor: { id: "tutor_profile_1", name: "Ngozi Adeyemi", subjects: ["Mathematics"] },
+      assignedBy: { id: "admin_user_1", name: "Femi Adisa" },
     });
     expect(repositoryMocks.assignTutorToStudent).toHaveBeenCalledWith({
       studentId: "student_profile_1",
