@@ -15,9 +15,18 @@ const TRACK_LABELS: Record<StudentProfile["learningTrack"], string> = {
 export function StudentsList({ students }: StudentsListProps) {
   if (students.length === 0) {
     return (
-      <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
-        No children added yet.
-      </p>
+      <div className="flex flex-col items-start gap-2">
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+          No children added yet.
+        </p>
+        <Link
+          href="/parent/students/new"
+          className="text-sm font-medium"
+          style={{ color: "var(--accent)" }}
+        >
+          Add your first child &rarr;
+        </Link>
+      </div>
     );
   }
 

@@ -7,11 +7,17 @@ vi.mock("../../api/actions.js", () => ({
   addStudent: (input: unknown) => addStudent(input),
 }));
 
+const push = vi.fn();
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push }),
+}));
+
 const { AddStudentForm } = await import("../AddStudentForm.js");
 
 describe("AddStudentForm", () => {
   beforeEach(() => {
-    addStudent.mockReset().mockResolvedValue(undefined);
+    push.mockReset();
+    addStudent.mockReset().mockResolvedValue({ id: "student_1", name: "Chidinma" });
   });
 
   it("renders all fields", () => {
@@ -46,13 +52,13 @@ describe("AddStudentForm", () => {
     );
   });
 
-  it("shows a confirmation message on a successful submission", async () => {
+  it("navigates to the new student's detail page on success", async () => {
     render(<AddStudentForm />);
     fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Chidinma" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Add child" }));
 
-    expect(await screen.findByText("Added Chidinma.")).toBeInTheDocument();
+    await waitFor(() => expect(push).toHaveBeenCalledWith("/parent/students/student_1"));
   });
 
   it("shows an error message when addStudent fails", async () => {
@@ -63,15 +69,6 @@ describe("AddStudentForm", () => {
     fireEvent.click(screen.getByRole("button", { name: "Add child" }));
 
     expect(await screen.findByRole("alert")).toHaveTextContent(/couldn't add/i);
-  });
-
-  it("calls onSuccess after a successful submission", async () => {
-    const onSuccess = vi.fn();
-    render(<AddStudentForm onSuccess={onSuccess} />);
-    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Chidinma" } });
-
-    fireEvent.click(screen.getByRole("button", { name: "Add child" }));
-
-    await waitFor(() => expect(onSuccess).toHaveBeenCalledTimes(1));
+    expect(push).not.toHaveBeenCalled();
   });
 });
