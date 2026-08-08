@@ -1,18 +1,20 @@
 import { currentUser } from "@clerk/nextjs/server";
-import { DashboardShell } from "@/components/DashboardShell";
+import { PageHeader } from "@/components/PageHeader";
 
 export default async function AdminDashboardPage() {
   const user = await currentUser();
 
   return (
-    <DashboardShell
-      brandLabel="BrightPath Admin"
-      greeting={`Welcome, ${user?.firstName ?? "Admin"}`}
-      description="Tutor approvals, the ledger, and disputes will land here."
-    >
-      <a href="/admin/tutors" className="text-sm font-medium" style={{ color: "var(--accent)" }}>
-        Review tutor applications →
-      </a>
-    </DashboardShell>
+    <>
+      <PageHeader
+        title={`Welcome, ${user?.firstName ?? "Admin"}`}
+        description="Your dashboard."
+      />
+      <div className="p-8">
+        <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+          Tutor approvals, the ledger, and disputes will land here.
+        </p>
+      </div>
+    </>
   );
 }
