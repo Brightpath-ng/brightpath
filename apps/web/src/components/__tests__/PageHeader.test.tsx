@@ -20,4 +20,24 @@ describe("PageHeader", () => {
     render(<PageHeader title="My Students" description="..." />);
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
+
+  it("renders a back link when backHref is provided", () => {
+    render(
+      <PageHeader
+        title="Amaka Obi"
+        description="..."
+        backHref="/parent/students"
+        backLabel="My Students"
+      />
+    );
+    expect(screen.getByRole("link", { name: /My Students/ })).toHaveAttribute(
+      "href",
+      "/parent/students"
+    );
+  });
+
+  it("renders no back link when backHref is omitted", () => {
+    render(<PageHeader title="My Students" description="..." />);
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
+  });
 });

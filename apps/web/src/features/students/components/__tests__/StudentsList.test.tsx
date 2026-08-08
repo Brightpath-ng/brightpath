@@ -33,6 +33,14 @@ describe("StudentsList", () => {
     expect(screen.getByText("Tutor-led")).toBeInTheDocument();
   });
 
+  it("links each row to the student's detail page", () => {
+    render(<StudentsList students={[buildStudent()]} />);
+    expect(screen.getByRole("link", { name: /Amaka Obi/ })).toHaveAttribute(
+      "href",
+      "/parent/students/student_1"
+    );
+  });
+
   it("omits the school/class line when neither is set", () => {
     render(<StudentsList students={[buildStudent({ school: null, class: null })]} />);
     expect(screen.queryByText(/Corona School/)).not.toBeInTheDocument();
