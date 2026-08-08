@@ -17,6 +17,7 @@ import {
   UserCog,
   GraduationCap,
   CalendarDays,
+  UserCheck,
 } from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
@@ -36,6 +37,7 @@ const ICONS = {
   UserCog,
   GraduationCap,
   CalendarDays,
+  UserCheck,
 } as const;
 
 export type AppIconName = keyof typeof ICONS;

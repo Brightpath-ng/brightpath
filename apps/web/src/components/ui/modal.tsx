@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { cn } from "@brightpath/utils";
 
@@ -22,6 +22,9 @@ export function Modal({
   maxWidth = "sm",
 }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = useRef<HTMLElement | null>(null);
+  const titleId = useId();
 
   useEffect(() => {
     if (!open) return;
@@ -31,9 +34,14 @@ export function Modal({
     }
     document.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
+
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    panelRef.current?.focus();
+
     return () => {
       document.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
+      previouslyFocusedRef.current?.focus();
     };
   }, [open, onClose]);
 
@@ -51,7 +59,12 @@ export function Modal({
       }}
     >
       <div
-        className={cn("w-full rounded-2xl p-6 space-y-5 relative", maxWidths[maxWidth])}
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
+        className={cn("w-full rounded-2xl p-6 space-y-5 relative outline-none", maxWidths[maxWidth])}
         style={{
           background: "var(--bg-surface)",
           boxShadow: "var(--shadow-elevated)",
@@ -60,6 +73,7 @@ export function Modal({
       >
         <button
           onClick={onClose}
+          aria-label="Close"
           className="absolute top-4 right-4 p-1.5 rounded-lg transition-colors"
           style={{ color: "var(--text-tertiary)" }}
           onMouseEnter={(e) => {
@@ -76,6 +90,7 @@ export function Modal({
 
         <div className="space-y-1 pr-6">
           <h2
+            id={titleId}
             className="text-base font-semibold"
             style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}
           >
