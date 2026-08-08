@@ -39,3 +39,13 @@ export {
   type AddStudentInput,
   type StudentProfile,
 } from "./students.js";
+
+export {
+  ASSIGNMENT_STATUSES,
+  AssignmentStatusSchema,
+  AssignStudentInputSchema,
+  AssignmentSchema,
+  type AssignmentStatus,
+  type AssignStudentInput,
+  type Assignment,
+} from "./assignments.js";
