@@ -63,26 +63,39 @@ This doesn't retire `Sheet` or `Modal` — it scopes them correctly:
 If a future feature seems to want a form in a `Sheet` again, that's a sign to re-read this section
 before reaching for it, not a sign the rule doesn't apply this time.
 
-## List rows
+## Lists — three shapes, picked by what the entity *is*
 
-Keep the divided-row shape already proven in `StudentsList`/`TutorApplicationsList` — a hairline
-divider between rows (`divide-y`), not a bordered card per item:
+**Row-list (divided rows)** — the default for records that aren't people: a hairline divider
+between rows (`divide-y`), not a bordered card per item.
 
 ```
 [avatar/icon]  Primary text (bold)         [Badge]
                Muted meta line (optional)
 ```
 
-This is the default for any entity whose most important info is "a name plus a few attributes."
-Once a `[id]` detail route exists for that entity, **rows become links to it** — add a hover
-background change and `cursor: pointer` so the affordance is obvious before the click, not a
-surprise after.
+`TutorApplicationsList` is the reference. Use this for any entity whose most important info is "a
+name plus a few attributes" and that reads as a record, not a person — an application, a dispute,
+a notification.
 
-**Columnar/tabular data is a different shape.** Ledger entries, audit log rows — many aligned
-numeric/date fields — don't force into "avatar + name + badge." Those get a real `<table>`, column
-headers, right-aligned numeric columns with `font-variant-numeric: tabular-nums`. Nothing needs
-this yet, so there's no `Table` component to build today — but when the Ledger module starts, build
-one instead of stretching the row-list pattern to fit data it was never shaped for.
+**Person-card grid** — for entities that represent people the user directly manages (a parent's
+children today; possibly tutors-you-work-with later): bordered card, circular avatar (a generic
+person-silhouette placeholder until photo upload exists, then the real photo) centered up top,
+name + a couple of secondary details below, learning-track-style `Badge` if relevant. Grid layout,
+not a list. Include a dashed "add new" tile as the grid's last item (Netflix/Google Family Link's
+"Add Profile" convention) alongside — not instead of — the page header's create button.
+`StudentsList` is the reference. The tell for reaching for this instead of a row-list: does this
+record represent a human being the user has a relationship with, not just data about one? A
+`StudentProfile` does. A `TutorApplication` (a pending decision *about* a person) doesn't — it's a
+queue item, not a profile.
+
+**Table** — columnar/tabular data: Ledger entries, audit log rows, anything with many aligned
+numeric/date fields that don't reduce to "avatar + name + badge." Real `<table>`, column headers,
+right-aligned numeric columns with `font-variant-numeric: tabular-nums`. Nothing needs this yet, so
+there's no `Table` component to build today — build one when the Ledger module starts, don't
+stretch the row-list or card-grid pattern to fit data neither was shaped for.
+
+Whichever shape: once a `[id]` detail route exists for that entity, **rows/cards become links to
+it** — add a hover state so the affordance is obvious before the click, not a surprise after.
 
 **Row-level inline actions** (buttons directly in a row, no navigation) stay appropriate for quick,
 low-friction, non-destructive decisions on records that don't need a detail page — approve is the
@@ -137,10 +150,20 @@ feature.
 If undoing the action requires contacting support or re-entering data, it needs a `Modal` confirm
 step before it fires. If undoing it is just clicking the opposite button, it doesn't.
 
+## Loading states
+
+`loading.tsx` at every route that fetches data renders the same shared `PageLoading`
+(`apps/web/src/components/PageLoading.tsx`) — a single centered spinner filling the content area,
+not a skeleton shaped after that page's specific layout. This was a deliberate reversal: an earlier
+version pixel-matched the loading state to each page's content, and it went stale silently the
+first time that content's layout changed (a list becoming a card grid, say). One generic spinner
+never drifts, because it doesn't represent anything to drift from. Don't build a bespoke skeleton
+for a new page — import `PageLoading`.
+
 ## Worked example
 
-`apps/web/src/features/students/` is the reference implementation once the retrofit in this doc's
-companion PRs lands — `/parent/students` (list, empty-state CTA, clickable rows),
-`/parent/students/new` (full-page create), `/parent/students/[id]` (detail, back-link, Edit
-action), `/parent/students/[id]/edit` (full-page edit, same form component as create). Read that
-module before building the next one; don't re-derive these decisions from scratch.
+`apps/web/src/features/students/` is the reference implementation — `/parent/students` (person-card
+grid, empty-state "add first child" tile, clickable cards), `/parent/students/new` (full-page
+create), `/parent/students/[id]` (detail, back-link, Edit action), `/parent/students/[id]/edit`
+(full-page edit, same form component as create). Read that module before building the next one;
+don't re-derive these decisions from scratch.
