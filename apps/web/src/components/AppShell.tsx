@@ -3,7 +3,19 @@
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, LayoutDashboard, Users, BookOpen, TrendingUp, CreditCard } from "lucide-react";
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  Users,
+  BookOpen,
+  TrendingUp,
+  CreditCard,
+  ClipboardCheck,
+  Wallet,
+  ShieldAlert,
+  UserCog,
+} from "lucide-react";
 import { UserButton } from "@clerk/nextjs";
 
 // Server Component layouts define nav items, but a raw component reference
@@ -16,6 +28,10 @@ const ICONS = {
   BookOpen,
   TrendingUp,
   CreditCard,
+  ClipboardCheck,
+  Wallet,
+  ShieldAlert,
+  UserCog,
 } as const;
 
 export type AppIconName = keyof typeof ICONS;
