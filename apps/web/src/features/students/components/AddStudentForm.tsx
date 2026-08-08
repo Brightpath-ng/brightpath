@@ -3,8 +3,8 @@
 import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, Label } from "@brightpath/ui";
-import { AddStudentInputSchema } from "@brightpath/types";
-import { addStudent } from "../api/actions";
+import { AddStudentInputSchema, type AddStudentInput } from "@brightpath/types";
+import { addStudent, updateStudent } from "../api/actions";
 
 const textareaClassName =
   "w-full rounded-[var(--radius-md)] border border-[var(--bg-border)] bg-[var(--bg-surface)] " +
@@ -12,13 +12,25 @@ const textareaClassName =
   "placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] " +
   "focus:ring-2 focus:ring-[var(--accent-dim)]";
 
-export function AddStudentForm() {
+interface AddStudentFormProps {
+  // Presence of studentId switches the form into edit mode: fields start
+  // from initialValues, submit calls updateStudent instead of addStudent,
+  // and success returns to the existing record's detail page instead of a
+  // freshly created one's.
+  studentId?: string;
+  initialValues?: AddStudentInput;
+}
+
+export function AddStudentForm({ studentId, initialValues }: AddStudentFormProps) {
   const router = useRouter();
-  const [name, setName] = useState("");
-  const [school, setSchool] = useState("");
-  const [studentClass, setStudentClass] = useState("");
-  const [learningGoals, setLearningGoals] = useState("");
-  const [learningChallenges, setLearningChallenges] = useState("");
+  const isEditMode = Boolean(studentId);
+  const [name, setName] = useState(initialValues?.name ?? "");
+  const [school, setSchool] = useState(initialValues?.school ?? "");
+  const [studentClass, setStudentClass] = useState(initialValues?.class ?? "");
+  const [learningGoals, setLearningGoals] = useState(initialValues?.learningGoals ?? "");
+  const [learningChallenges, setLearningChallenges] = useState(
+    initialValues?.learningChallenges ?? ""
+  );
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -42,10 +54,19 @@ export function AddStudentForm() {
 
     startTransition(async () => {
       try {
-        const created = await addStudent(parsed.data);
-        router.push(`/parent/students/${created.id}`);
+        if (studentId) {
+          await updateStudent(studentId, parsed.data);
+          router.push(`/parent/students/${studentId}`);
+        } else {
+          const created = await addStudent(parsed.data);
+          router.push(`/parent/students/${created.id}`);
+        }
       } catch {
-        setError("Couldn't add this child. Please try again.");
+        setError(
+          isEditMode
+            ? "Couldn't save these changes. Please try again."
+            : "Couldn't add this child. Please try again."
+        );
       }
     });
   }
@@ -109,7 +130,13 @@ export function AddStudentForm() {
       ) : null}
 
       <Button type="submit" disabled={isPending} loading={isPending} className="self-start">
-        {isPending ? "Adding..." : "Add child"}
+        {isPending
+          ? isEditMode
+            ? "Saving..."
+            : "Adding..."
+          : isEditMode
+            ? "Save changes"
+            : "Add child"}
       </Button>
     </form>
   );

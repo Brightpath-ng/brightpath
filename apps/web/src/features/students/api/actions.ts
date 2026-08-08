@@ -12,3 +12,13 @@ export async function addStudent(input: AddStudentInput): Promise<StudentProfile
   revalidatePath("/parent/students");
   return student;
 }
+
+export async function updateStudent(id: string, input: AddStudentInput): Promise<StudentProfile> {
+  const student = await apiFetch(`/students/${id}`, StudentProfileSchema, {
+    method: "PATCH",
+    body: JSON.stringify(input),
+  });
+  revalidatePath("/parent/students");
+  revalidatePath(`/parent/students/${id}`);
+  return student;
+}
