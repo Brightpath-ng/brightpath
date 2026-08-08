@@ -24,6 +24,7 @@ export interface StudentsServiceDeps {
   findUserByClerkId: (clerkId: string) => Promise<{ id: string } | null>;
   createStudentProfile: (input: CreateStudentProfileInput) => Promise<StudentProfile>;
   listStudentProfilesByParentId: (parentId: string) => Promise<StudentProfile[]>;
+  listAllStudentProfiles: () => Promise<StudentProfile[]>;
   findStudentProfileById: (id: string) => Promise<StudentProfile | null>;
   updateStudentProfile: (id: string, input: UpdateStudentProfileInput) => Promise<StudentProfile>;
 }
@@ -61,6 +62,12 @@ export function createStudentsService(deps: StudentsServiceDeps) {
       }
 
       return deps.listStudentProfilesByParentId(parent.id);
+    },
+
+    // No caller-scoping -- admin-only, guarded by requireRole("admin") at the
+    // route level, not by anything resolved from the caller's own User row.
+    async listAllStudents(): Promise<StudentProfile[]> {
+      return deps.listAllStudentProfiles();
     },
 
     async getStudent(parentClerkId: string, studentId: string): Promise<StudentProfile> {

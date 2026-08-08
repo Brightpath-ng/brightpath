@@ -44,7 +44,9 @@ export interface TutorsServiceDeps {
   ) => Promise<{ user: { id: string }; tutorProfile: { id: string } }>;
   findTutorProfileByClerkId: (clerkId: string) => Promise<TutorProfile | null>;
   findTutorProfileById: (id: string) => Promise<TutorProfile | null>;
-  listPendingTutorProfiles: () => Promise<TutorApplicationSummaryRecord[]>;
+  listTutorProfilesByStatus: (
+    status: TutorApplicationStatus
+  ) => Promise<TutorApplicationSummaryRecord[]>;
   updateTutorProfileStatus: (id: string, status: TutorApplicationStatus) => Promise<TutorProfile>;
 }
 
@@ -110,7 +112,14 @@ export function createTutorsService(deps: TutorsServiceDeps) {
     },
 
     listPendingApplications(): Promise<TutorApplicationSummaryRecord[]> {
-      return deps.listPendingTutorProfiles();
+      return deps.listTutorProfilesByStatus("PENDING");
+    },
+
+    // Admin-only, backs the tutor-assignment picker -- no eligibility
+    // filtering beyond status (see plan's explicitly-out-of-scope note on
+    // criteria-based matching).
+    listApprovedTutors(): Promise<TutorApplicationSummaryRecord[]> {
+      return deps.listTutorProfilesByStatus("APPROVED");
     },
 
     approveApplication(id: string): Promise<TutorProfile> {

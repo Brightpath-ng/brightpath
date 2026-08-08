@@ -4,6 +4,7 @@ import {
   handleApplyAsTutor,
   handleGetMyProfile,
   handleListApplications,
+  handleListApprovedTutors,
   handleApproveApplication,
   handleRejectApplication,
 } from "./controller.js";
@@ -17,6 +18,7 @@ tutorsRouter.post("/tutors/apply", handleApplyAsTutor);
 tutorsRouter.get("/tutors/me", requireRole("tutor"), handleGetMyProfile);
 
 tutorsRouter.get("/tutors/applications", requireRole("admin"), handleListApplications);
+tutorsRouter.get("/tutors/approved", requireRole("admin"), handleListApprovedTutors);
 tutorsRouter.post(
   "/tutors/applications/:id/approve",
   requireRole("admin"),

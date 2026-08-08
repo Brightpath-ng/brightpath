@@ -64,9 +64,14 @@ export type TutorApplicationSummaryRecord = TutorProfile & {
   user: Pick<User, "name" | "email">;
 };
 
-export function listPendingTutorProfiles(): Promise<TutorApplicationSummaryRecord[]> {
+// Generic over status so the pending-applications list and the
+// approved-tutors lookup (for the assignment picker) share one query instead
+// of two near-duplicates.
+export function listTutorProfilesByStatus(
+  status: TutorApplicationStatus
+): Promise<TutorApplicationSummaryRecord[]> {
   return prisma.tutorProfile.findMany({
-    where: { status: "PENDING" },
+    where: { status },
     include: { user: { select: { name: true, email: true } } },
     orderBy: { createdAt: "asc" },
   });

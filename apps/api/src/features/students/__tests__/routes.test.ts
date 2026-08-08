@@ -25,6 +25,7 @@ const repositoryMocks = {
   findUserByClerkId: vi.fn().mockResolvedValue({ id: "db_user_1" }),
   createStudentProfile: vi.fn().mockResolvedValue(studentProfile),
   listStudentProfilesByParentId: vi.fn().mockResolvedValue([studentProfile]),
+  listAllStudentProfiles: vi.fn().mockResolvedValue([studentProfile]),
   findStudentProfileById: vi.fn().mockResolvedValue(studentProfile),
   updateStudentProfile: vi.fn().mockResolvedValue(studentProfile),
 };
@@ -41,6 +42,7 @@ beforeEach(() => {
   repositoryMocks.findUserByClerkId.mockResolvedValue({ id: "db_user_1" });
   repositoryMocks.createStudentProfile.mockResolvedValue(studentProfile);
   repositoryMocks.listStudentProfilesByParentId.mockResolvedValue([studentProfile]);
+  repositoryMocks.listAllStudentProfiles.mockResolvedValue([studentProfile]);
   repositoryMocks.findStudentProfileById.mockResolvedValue(studentProfile);
   repositoryMocks.updateStudentProfile.mockResolvedValue(studentProfile);
 });
@@ -268,5 +270,49 @@ describe("PATCH /students/:id", () => {
       .send({ name: "Ada Byron" });
 
     expect(response.status).toBe(404);
+  });
+});
+
+describe("GET /admin/students", () => {
+  it("returns 401 without a bearer token", async () => {
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/admin/students");
+
+    expect(response.status).toBe(401);
+  });
+
+  it("returns 403 for a non-admin caller", async () => {
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/admin/students").set(authHeader("parent"));
+
+    expect(response.status).toBe(403);
+  });
+
+  it("returns every student, not scoped to one parent", async () => {
+    repositoryMocks.listAllStudentProfiles.mockResolvedValue([
+      studentProfile,
+      { ...studentProfile, id: "student_profile_2", parentId: "some_other_parent" },
+    ]);
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/admin/students").set(authHeader("admin"));
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+      expect.objectContaining({ id: "student_profile_1" }),
+      expect.objectContaining({ id: "student_profile_2" }),
+    ]);
+  });
+
+  it("returns 200 with an empty array when there are no students", async () => {
+    repositoryMocks.listAllStudentProfiles.mockResolvedValue([]);
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/admin/students").set(authHeader("admin"));
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
   });
 });

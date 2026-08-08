@@ -27,7 +27,7 @@ function getTutorsService() {
     createUserWithTutorProfile: repository.createUserWithTutorProfile,
     findTutorProfileByClerkId: repository.findTutorProfileByClerkId,
     findTutorProfileById: repository.findTutorProfileById,
-    listPendingTutorProfiles: repository.listPendingTutorProfiles,
+    listTutorProfilesByStatus: repository.listTutorProfilesByStatus,
     updateTutorProfileStatus: repository.updateTutorProfileStatus,
   });
 }
@@ -94,6 +94,16 @@ export async function handleListApplications(_req: Request, res: Response) {
     res.status(200).json(applications.map(toTutorApplicationSummaryDTO));
   } catch (error) {
     console.error("Failed to list tutor applications", error);
+    res.status(500).json({ error: "Internal error" });
+  }
+}
+
+export async function handleListApprovedTutors(_req: Request, res: Response) {
+  try {
+    const tutors = await getTutorsService().listApprovedTutors();
+    res.status(200).json(tutors.map(toTutorApplicationSummaryDTO));
+  } catch (error) {
+    console.error("Failed to list approved tutors", error);
     res.status(500).json({ error: "Internal error" });
   }
 }
