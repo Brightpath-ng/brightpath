@@ -1,5 +1,5 @@
 import { PageLoading } from "@/components/PageLoading";
 
-export default function TutorDashboardLoading() {
+export default function TutorLoading() {
   return <PageLoading />;
 }
