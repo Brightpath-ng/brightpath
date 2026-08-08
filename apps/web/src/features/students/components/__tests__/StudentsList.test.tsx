@@ -20,33 +20,22 @@ function buildStudent(overrides: Partial<StudentProfile> = {}): StudentProfile {
 }
 
 describe("StudentsList", () => {
-  it("shows an empty state with a create CTA when there are no students", () => {
+  it("always renders an Add child card, even with no students", () => {
     render(<StudentsList students={[]} />);
-    expect(screen.getByText("No children added yet.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Add your first child/ })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: /Add child/ })).toHaveAttribute(
       "href",
       "/parent/students/new"
     );
   });
 
-  it("renders column headers", () => {
-    render(<StudentsList students={[buildStudent()]} />);
-    expect(screen.getByText("Student")).toBeInTheDocument();
-    expect(screen.getByText("School")).toBeInTheDocument();
-    expect(screen.getByText("Class")).toBeInTheDocument();
-    expect(screen.getByText("Track")).toBeInTheDocument();
-  });
-
-  it("renders each student's name, initial, school, class, and learning track as separate columns", () => {
+  it("renders each student's name, school/class, and learning track on a profile card", () => {
     render(<StudentsList students={[buildStudent()]} />);
     expect(screen.getByText("Amaka Obi")).toBeInTheDocument();
-    expect(screen.getByText("A")).toBeInTheDocument();
-    expect(screen.getByText("Corona School")).toBeInTheDocument();
-    expect(screen.getByText("JSS 2")).toBeInTheDocument();
+    expect(screen.getByText("Corona School · JSS 2")).toBeInTheDocument();
     expect(screen.getByText("Tutor-led")).toBeInTheDocument();
   });
 
-  it("links each row to the student's detail page", () => {
+  it("links each card to the student's detail page", () => {
     render(<StudentsList students={[buildStudent()]} />);
     expect(screen.getByRole("link", { name: /Amaka Obi/ })).toHaveAttribute(
       "href",
@@ -54,13 +43,12 @@ describe("StudentsList", () => {
     );
   });
 
-  it("shows a placeholder dash for unset school/class", () => {
+  it("shows a fallback line when neither school nor class is set", () => {
     render(<StudentsList students={[buildStudent({ school: null, class: null })]} />);
-    expect(screen.queryByText("Corona School")).not.toBeInTheDocument();
-    expect(screen.getAllByText("—")).toHaveLength(2);
+    expect(screen.getByText("No school on file")).toBeInTheDocument();
   });
 
-  it("renders one row per student", () => {
+  it("renders one card per student plus the Add child card", () => {
     render(
       <StudentsList
         students={[buildStudent(), buildStudent({ id: "student_2", name: "David Chukwu" })]}
@@ -68,6 +56,6 @@ describe("StudentsList", () => {
     );
     expect(screen.getByText("Amaka Obi")).toBeInTheDocument();
     expect(screen.getByText("David Chukwu")).toBeInTheDocument();
-    expect(screen.getByText("D")).toBeInTheDocument();
+    expect(screen.getAllByRole("link")).toHaveLength(3);
   });
 });
