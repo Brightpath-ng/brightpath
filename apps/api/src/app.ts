@@ -3,6 +3,7 @@ import express, { type Express } from "express";
 import { authRouter } from "./features/auth/routes.js";
 import { tutorsRouter } from "./features/tutors/routes.js";
 import { studentsRouter } from "./features/students/routes.js";
+import { assignmentsRouter } from "./features/assignments/routes.js";
 
 const allowedOrigins = [process.env.MARKETING_ORIGIN, process.env.WEB_ORIGIN].filter(
   (origin): origin is string => Boolean(origin)
@@ -18,6 +19,7 @@ export function createApp(): Express {
   app.use(express.json());
   app.use(tutorsRouter);
   app.use(studentsRouter);
+  app.use(assignmentsRouter);
 
   app.get("/health", (_req, res) => {
     res.status(200).json({ status: "ok" });
