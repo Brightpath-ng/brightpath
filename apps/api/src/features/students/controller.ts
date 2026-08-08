@@ -9,6 +9,7 @@ function getStudentsService() {
     findUserByClerkId: repository.findUserByClerkId,
     createStudentProfile: repository.createStudentProfile,
     listStudentProfilesByParentId: repository.listStudentProfilesByParentId,
+    listAllStudentProfiles: repository.listAllStudentProfiles,
     findStudentProfileById: repository.findStudentProfileById,
     updateStudentProfile: repository.updateStudentProfile,
   });
@@ -61,6 +62,16 @@ export async function handleListMyStudents(req: Request, res: Response) {
       return;
     }
     console.error("Failed to list students", error);
+    res.status(500).json({ error: "Internal error" });
+  }
+}
+
+export async function handleListAllStudents(_req: Request, res: Response) {
+  try {
+    const students = await getStudentsService().listAllStudents();
+    res.status(200).json(students.map(toStudentProfileDTO));
+  } catch (error) {
+    console.error("Failed to list all students", error);
     res.status(500).json({ error: "Internal error" });
   }
 }

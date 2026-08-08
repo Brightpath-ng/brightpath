@@ -48,7 +48,7 @@ function buildDeps(overrides: Partial<TutorsServiceDeps> = {}): TutorsServiceDep
       .mockResolvedValue({ user: { id: "db_user_1" }, tutorProfile: { id: "tutor_profile_1" } }),
     findTutorProfileByClerkId: vi.fn().mockResolvedValue(buildProfile()),
     findTutorProfileById: vi.fn().mockResolvedValue(buildProfile()),
-    listPendingTutorProfiles: vi.fn().mockResolvedValue([]),
+    listTutorProfilesByStatus: vi.fn().mockResolvedValue([]),
     updateTutorProfileStatus: vi.fn().mockResolvedValue(buildProfile({ status: "APPROVED" })),
     ...overrides,
   };
@@ -151,13 +151,29 @@ describe("tutorsService.getMyProfile", () => {
 });
 
 describe("tutorsService.listPendingApplications", () => {
-  it("delegates to listPendingTutorProfiles", async () => {
-    const deps = buildDeps({ listPendingTutorProfiles: vi.fn().mockResolvedValue([buildProfile()]) });
+  it("delegates to listTutorProfilesByStatus with PENDING", async () => {
+    const listTutorProfilesByStatus = vi.fn().mockResolvedValue([buildProfile()]);
+    const deps = buildDeps({ listTutorProfilesByStatus });
     const service = createTutorsService(deps);
 
     const result = await service.listPendingApplications();
 
+    expect(listTutorProfilesByStatus).toHaveBeenCalledWith("PENDING");
     expect(result).toEqual([buildProfile()]);
+  });
+});
+
+describe("tutorsService.listApprovedTutors", () => {
+  it("delegates to listTutorProfilesByStatus with APPROVED", async () => {
+    const approved = buildProfile({ status: "APPROVED" });
+    const listTutorProfilesByStatus = vi.fn().mockResolvedValue([approved]);
+    const deps = buildDeps({ listTutorProfilesByStatus });
+    const service = createTutorsService(deps);
+
+    const result = await service.listApprovedTutors();
+
+    expect(listTutorProfilesByStatus).toHaveBeenCalledWith("APPROVED");
+    expect(result).toEqual([approved]);
   });
 });
 
