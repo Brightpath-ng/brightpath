@@ -1,11 +1,23 @@
 import { PageHeader } from "@/components/PageHeader";
+import { LinkButton } from "@/components/LinkButton";
 import { listMyStudents } from "@/features/students/api/list-students";
-import { StudentsPageContent } from "@/features/students/components/StudentsPageContent";
+import { StudentsList } from "@/features/students/components/StudentsList";
 
 export default async function ParentStudentsPage() {
   try {
     const students = await listMyStudents();
-    return <StudentsPageContent students={students} />;
+    return (
+      <>
+        <PageHeader
+          title="My Students"
+          description="The children you manage on BrightPath."
+          action={<LinkButton href="/parent/students/new">Add child</LinkButton>}
+        />
+        <div className="p-8">
+          <StudentsList students={students} />
+        </div>
+      </>
+    );
   } catch {
     return (
       <>

@@ -20,9 +20,13 @@ function buildStudent(overrides: Partial<StudentProfile> = {}): StudentProfile {
 }
 
 describe("StudentsList", () => {
-  it("shows an empty state when there are no students", () => {
+  it("shows an empty state with a create CTA when there are no students", () => {
     render(<StudentsList students={[]} />);
     expect(screen.getByText("No children added yet.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Add your first child/ })).toHaveAttribute(
+      "href",
+      "/parent/students/new"
+    );
   });
 
   it("renders each student's name, initial, school/class, and learning track", () => {

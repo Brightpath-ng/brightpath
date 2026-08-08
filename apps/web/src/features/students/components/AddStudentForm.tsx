@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, type FormEvent } from "react";
+import { useRouter } from "next/navigation";
 import { Button, Input, Label } from "@brightpath/ui";
 import { AddStudentInputSchema } from "@brightpath/types";
 import { addStudent } from "../api/actions";
@@ -11,11 +12,8 @@ const textareaClassName =
   "placeholder:text-[var(--text-tertiary)] focus:border-[var(--accent)] " +
   "focus:ring-2 focus:ring-[var(--accent-dim)]";
 
-interface AddStudentFormProps {
-  onSuccess?: () => void;
-}
-
-export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
+export function AddStudentForm() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [school, setSchool] = useState("");
   const [studentClass, setStudentClass] = useState("");
@@ -23,12 +21,10 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
   const [learningChallenges, setLearningChallenges] = useState("");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const [addedName, setAddedName] = useState<string | null>(null);
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
-    setAddedName(null);
 
     const input = {
       name,
@@ -46,14 +42,8 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
 
     startTransition(async () => {
       try {
-        await addStudent(parsed.data);
-        setAddedName(parsed.data.name);
-        setName("");
-        setSchool("");
-        setStudentClass("");
-        setLearningGoals("");
-        setLearningChallenges("");
-        onSuccess?.();
+        const created = await addStudent(parsed.data);
+        router.push(`/parent/students/${created.id}`);
       } catch {
         setError("Couldn't add this child. Please try again.");
       }
@@ -61,7 +51,7 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="studentName">Name</Label>
@@ -115,11 +105,6 @@ export function AddStudentForm({ onSuccess }: AddStudentFormProps) {
       {error ? (
         <p role="alert" className="text-sm" style={{ color: "var(--red)" }}>
           {error}
-        </p>
-      ) : null}
-      {addedName ? (
-        <p className="text-sm" style={{ color: "var(--accent)" }}>
-          Added {addedName}.
         </p>
       ) : null}
 
