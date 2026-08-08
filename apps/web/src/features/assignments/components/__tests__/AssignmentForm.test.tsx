@@ -160,6 +160,19 @@ describe("AssignmentForm", () => {
     expect(screen.getByText("Already assigned to Ngozi Adeyemi.")).toBeInTheDocument();
   });
 
+  it("prefills the student when an initialStudentId is provided", () => {
+    render(
+      <AssignmentForm
+        students={students}
+        tutors={tutors}
+        assignments={[]}
+        initialStudentId="student_1"
+      />
+    );
+
+    expect(screen.getByLabelText("Student")).toHaveTextContent("Amaka Obi");
+  });
+
   it("submits the selected student and tutor and navigates to the detail page", async () => {
     render(<AssignmentForm students={students} tutors={tutors} assignments={[]} />);
 

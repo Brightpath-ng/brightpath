@@ -13,6 +13,7 @@ interface AssignmentFormProps {
   students: StudentProfile[];
   tutors: TutorApplicationSummary[];
   assignments: Assignment[];
+  initialStudentId?: string;
 }
 
 function studentMeta(student: StudentProfile): string | undefined {
@@ -20,9 +21,9 @@ function studentMeta(student: StudentProfile): string | undefined {
   return student.school ?? undefined;
 }
 
-export function AssignmentForm({ students, tutors, assignments }: AssignmentFormProps) {
+export function AssignmentForm({ students, tutors, assignments, initialStudentId }: AssignmentFormProps) {
   const router = useRouter();
-  const [studentId, setStudentId] = useState("");
+  const [studentId, setStudentId] = useState(initialStudentId ?? "");
   const [tutorId, setTutorId] = useState("");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
