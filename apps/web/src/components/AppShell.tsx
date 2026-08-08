@@ -74,19 +74,19 @@ export function AppShell({
       <aside
         id="app-sidebar"
         className={
-          "fixed inset-y-0 left-0 z-20 flex w-60 shrink-0 flex-col p-3 transition-transform duration-200 lg:static lg:translate-x-0 " +
+          "fixed inset-y-0 left-0 z-20 flex w-[272px] shrink-0 flex-col p-4 transition-transform duration-200 lg:static lg:translate-x-0 " +
           (isMobileOpen ? "translate-x-0" : "-translate-x-full")
         }
         style={{ background: "var(--bg-elevated)", borderRight: "1px solid var(--bg-border-subtle)" }}
       >
-        <div className="flex items-center gap-2 px-2 pt-1 pb-4">
-          <span className="size-5 shrink-0 rounded-[var(--radius-sm)]" style={{ background: "var(--accent)" }} />
+        <div className="flex items-center gap-2.5 px-1 pb-5">
+          <span className="size-6 shrink-0 rounded-[var(--radius-sm)]" style={{ background: "var(--accent)" }} />
           <span className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
             {brandLabel}
           </span>
         </div>
 
-        <nav className="flex flex-col gap-0.5" aria-label="Main">
+        <nav className="flex flex-col gap-1" aria-label="Main">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             const Icon = ICONS[item.icon];
@@ -95,14 +95,14 @@ export function AppShell({
                 key={item.href}
                 href={item.href}
                 onClick={() => setIsMobileOpen(false)}
-                className="flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-sm font-medium transition-colors"
+                className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium transition-colors"
                 style={
                   isActive
                     ? { background: "var(--accent-dim)", color: "var(--accent)" }
                     : { color: "var(--text-secondary)" }
                 }
               >
-                <Icon aria-hidden="true" className="size-3.5 shrink-0" />
+                <Icon aria-hidden="true" className="size-4 shrink-0" />
                 {item.label}
               </Link>
             );
@@ -110,16 +110,16 @@ export function AppShell({
         </nav>
 
         {plannedItems.length > 0 ? (
-          <nav className="mt-1 flex flex-col gap-0.5" aria-label="Planned">
+          <nav className="mt-4 flex flex-col gap-1" aria-label="Planned">
             {plannedItems.map((item) => {
               const Icon = ICONS[item.icon];
               return (
                 <div
                   key={item.label}
-                  className="flex items-center gap-2.5 rounded-[var(--radius-sm)] px-2.5 py-1.5 text-sm font-medium"
+                  className="flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm font-medium"
                   style={{ color: "var(--text-tertiary)" }}
                 >
-                  <Icon aria-hidden="true" className="size-3.5 shrink-0" />
+                  <Icon aria-hidden="true" className="size-4 shrink-0" />
                   {item.label}
                   <span
                     className="ml-auto rounded-[var(--radius-full)] px-1.5 py-0.5 text-[10px] font-semibold"
@@ -136,7 +136,7 @@ export function AppShell({
         <div className="flex-1" />
 
         <div
-          className="flex items-center gap-2 rounded-[var(--radius-md)] px-2 py-2"
+          className="flex items-center gap-2.5 rounded-[var(--radius-md)] px-3 py-2.5"
           style={{ borderTop: "1px solid var(--bg-border-subtle)" }}
         >
           <UserButton />

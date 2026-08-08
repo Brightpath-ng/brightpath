@@ -29,11 +29,20 @@ describe("StudentsList", () => {
     );
   });
 
-  it("renders each student's name, initial, school/class, and learning track", () => {
+  it("renders column headers", () => {
+    render(<StudentsList students={[buildStudent()]} />);
+    expect(screen.getByText("Student")).toBeInTheDocument();
+    expect(screen.getByText("School")).toBeInTheDocument();
+    expect(screen.getByText("Class")).toBeInTheDocument();
+    expect(screen.getByText("Track")).toBeInTheDocument();
+  });
+
+  it("renders each student's name, initial, school, class, and learning track as separate columns", () => {
     render(<StudentsList students={[buildStudent()]} />);
     expect(screen.getByText("Amaka Obi")).toBeInTheDocument();
     expect(screen.getByText("A")).toBeInTheDocument();
-    expect(screen.getByText("Corona School · JSS 2")).toBeInTheDocument();
+    expect(screen.getByText("Corona School")).toBeInTheDocument();
+    expect(screen.getByText("JSS 2")).toBeInTheDocument();
     expect(screen.getByText("Tutor-led")).toBeInTheDocument();
   });
 
@@ -45,9 +54,10 @@ describe("StudentsList", () => {
     );
   });
 
-  it("omits the school/class line when neither is set", () => {
+  it("shows a placeholder dash for unset school/class", () => {
     render(<StudentsList students={[buildStudent({ school: null, class: null })]} />);
-    expect(screen.queryByText(/Corona School/)).not.toBeInTheDocument();
+    expect(screen.queryByText("Corona School")).not.toBeInTheDocument();
+    expect(screen.getAllByText("—")).toHaveLength(2);
   });
 
   it("renders one row per student", () => {
