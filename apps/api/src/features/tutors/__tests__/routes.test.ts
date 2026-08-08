@@ -36,7 +36,7 @@ const repositoryMocks = {
     .mockResolvedValue({ user: { id: "db_user_1" }, tutorProfile: { id: "tutor_profile_1" } }),
   findTutorProfileByClerkId: vi.fn().mockResolvedValue(pendingProfile),
   findTutorProfileById: vi.fn().mockResolvedValue(pendingProfile),
-  listPendingTutorProfiles: vi
+  listTutorProfilesByStatus: vi
     .fn()
     .mockResolvedValue([{ ...pendingProfile, user: { name: "Ngozi Adeyemi", email: "ngozi@example.com" } }]),
   updateTutorProfileStatus: vi.fn().mockResolvedValue({ ...pendingProfile, status: "APPROVED" }),
@@ -71,7 +71,7 @@ beforeEach(() => {
   });
   repositoryMocks.findTutorProfileByClerkId.mockResolvedValue(pendingProfile);
   repositoryMocks.findTutorProfileById.mockResolvedValue(pendingProfile);
-  repositoryMocks.listPendingTutorProfiles.mockResolvedValue([
+  repositoryMocks.listTutorProfilesByStatus.mockResolvedValue([
     { ...pendingProfile, user: { name: "Ngozi Adeyemi", email: "ngozi@example.com" } },
   ]);
   repositoryMocks.updateTutorProfileStatus.mockResolvedValue({ ...pendingProfile, status: "APPROVED" });
@@ -183,12 +183,59 @@ describe("GET /tutors/applications", () => {
   });
 
   it("returns 200 with an empty array when there are no pending applications", async () => {
-    repositoryMocks.listPendingTutorProfiles.mockResolvedValue([]);
+    repositoryMocks.listTutorProfilesByStatus.mockResolvedValue([]);
     const { createApp } = await import("../../../app.js");
 
     const response = await request(createApp())
       .get("/tutors/applications")
       .set(authHeader("admin"));
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([]);
+  });
+});
+
+describe("GET /tutors/approved", () => {
+  it("returns 401 without a bearer token", async () => {
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/tutors/approved");
+
+    expect(response.status).toBe(401);
+  });
+
+  it("returns 403 for a non-admin caller", async () => {
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/tutors/approved").set(authHeader("tutor"));
+
+    expect(response.status).toBe(403);
+  });
+
+  it("returns approved tutors for an admin", async () => {
+    repositoryMocks.listTutorProfilesByStatus.mockResolvedValue([
+      {
+        ...pendingProfile,
+        status: "APPROVED",
+        user: { name: "Ngozi Adeyemi", email: "ngozi@example.com" },
+      },
+    ]);
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/tutors/approved").set(authHeader("admin"));
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual([
+      expect.objectContaining({ id: "tutor_profile_1", status: "APPROVED" }),
+    ]);
+    expect(repositoryMocks.listTutorProfilesByStatus).toHaveBeenCalledWith("APPROVED");
+  });
+
+  it("returns 200 with an empty array when there are no approved tutors", async () => {
+    repositoryMocks.listTutorProfilesByStatus.mockResolvedValue([]);
+    const { createApp } = await import("../../../app.js");
+
+    const response = await request(createApp()).get("/tutors/approved").set(authHeader("admin"));
 
     expect(response.status).toBe(200);
     expect(response.body).toEqual([]);

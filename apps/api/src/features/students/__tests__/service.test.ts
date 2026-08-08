@@ -36,6 +36,7 @@ function buildDeps(overrides: Partial<StudentsServiceDeps> = {}): StudentsServic
     findUserByClerkId: vi.fn().mockResolvedValue({ id: "db_user_1" }),
     createStudentProfile: vi.fn().mockResolvedValue(buildProfile()),
     listStudentProfilesByParentId: vi.fn().mockResolvedValue([]),
+    listAllStudentProfiles: vi.fn().mockResolvedValue([]),
     findStudentProfileById: vi.fn().mockResolvedValue(buildProfile()),
     updateStudentProfile: vi.fn().mockResolvedValue(buildProfile()),
     ...overrides,
@@ -115,6 +116,19 @@ describe("studentsService.listMyStudents", () => {
 
     await expect(service.listMyStudents("clerk_user_1")).rejects.toThrow(ParentNotFoundError);
     expect(deps.listStudentProfilesByParentId).not.toHaveBeenCalled();
+  });
+});
+
+describe("studentsService.listAllStudents", () => {
+  it("lists every student, unscoped by parent", async () => {
+    const listAllStudentProfiles = vi.fn().mockResolvedValue([buildProfile()]);
+    const deps = buildDeps({ listAllStudentProfiles });
+    const service = createStudentsService(deps);
+
+    const result = await service.listAllStudents();
+
+    expect(listAllStudentProfiles).toHaveBeenCalled();
+    expect(result).toEqual([buildProfile()]);
   });
 });
 

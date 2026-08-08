@@ -3,6 +3,7 @@ import { requireRole } from "../../middleware/require-auth.js";
 import {
   handleAddStudent,
   handleListMyStudents,
+  handleListAllStudents,
   handleGetStudent,
   handleUpdateStudent,
 } from "./controller.js";
@@ -13,3 +14,4 @@ studentsRouter.post("/students", requireRole("parent"), handleAddStudent);
 studentsRouter.get("/students", requireRole("parent"), handleListMyStudents);
 studentsRouter.get("/students/:id", requireRole("parent"), handleGetStudent);
 studentsRouter.patch("/students/:id", requireRole("parent"), handleUpdateStudent);
+studentsRouter.get("/admin/students", requireRole("admin"), handleListAllStudents);
