@@ -38,6 +38,7 @@ function toAssignmentDTO(record: AssignmentRecord) {
       name: record.tutor.user.name,
       subjects: record.tutor.subjects,
     },
+    assignedBy: { id: record.assignedBy.id, name: record.assignedBy.name },
   };
 }
 

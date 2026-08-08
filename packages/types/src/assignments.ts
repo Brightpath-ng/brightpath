@@ -27,6 +27,11 @@ const AssignmentTutorSchema = z.object({
   subjects: z.array(z.string()),
 });
 
+const AssignmentAssignedBySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
 export const AssignmentSchema = z.object({
   id: z.string(),
   status: AssignmentStatusSchema,
@@ -37,6 +42,7 @@ export const AssignmentSchema = z.object({
   updatedAt: z.string(),
   student: AssignmentStudentSchema,
   tutor: AssignmentTutorSchema,
+  assignedBy: AssignmentAssignedBySchema,
 });
 
 export type Assignment = z.infer<typeof AssignmentSchema>;

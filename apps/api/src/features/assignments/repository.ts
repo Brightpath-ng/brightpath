@@ -17,11 +17,13 @@ const assignmentInclude = {
       user: { select: { name: true } },
     },
   },
+  assignedBy: { select: { id: true, name: true } },
 } as const;
 
 export type AssignmentRecord = Assignment & {
   student: { id: string; name: string };
   tutor: { id: string; subjects: string[]; user: { name: string } };
+  assignedBy: { id: string; name: string };
 };
 
 export interface CreateAssignmentInput {

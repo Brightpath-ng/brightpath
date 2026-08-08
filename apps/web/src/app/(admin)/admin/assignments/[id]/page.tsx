@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/PageHeader";
 import { getAssignment } from "@/features/assignments/api/get-assignment";
+import { listAssignments } from "@/features/assignments/api/list-assignments";
 import { AssignmentDetail } from "@/features/assignments/components/AssignmentDetail";
 import { EndAssignmentButton } from "@/features/assignments/components/EndAssignmentButton";
 
@@ -12,7 +13,7 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
   const { id } = await params;
 
   try {
-    const assignment = await getAssignment(id);
+    const [assignment, allAssignments] = await Promise.all([getAssignment(id), listAssignments()]);
     return (
       <>
         <PageHeader
@@ -41,7 +42,7 @@ export default async function AssignmentDetailPage({ params }: AssignmentDetailP
           }
         />
         <div className="p-8">
-          <AssignmentDetail assignment={assignment} />
+          <AssignmentDetail assignment={assignment} allAssignments={allAssignments} />
         </div>
       </>
     );

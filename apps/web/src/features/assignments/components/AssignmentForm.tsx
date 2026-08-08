@@ -21,6 +21,15 @@ function studentMeta(student: StudentProfile): string | undefined {
   return student.school ?? undefined;
 }
 
+function tutorMeta(tutor: TutorApplicationSummary, activeStudentCount: number): string {
+  const subjects = tutor.subjects.length > 0 ? tutor.subjects.join(", ") : null;
+  const load =
+    activeStudentCount === 0
+      ? "No students yet"
+      : `${activeStudentCount} active student${activeStudentCount === 1 ? "" : "s"}`;
+  return subjects ? `${subjects} · ${load}` : load;
+}
+
 export function AssignmentForm({ students, tutors, assignments, initialStudentId }: AssignmentFormProps) {
   const router = useRouter();
   const [studentId, setStudentId] = useState(initialStudentId ?? "");
@@ -44,10 +53,17 @@ export function AssignmentForm({ students, tutors, assignments, initialStudentId
     meta: studentMeta(student),
   }));
 
+  const tutorActiveCounts = new Map<string, number>();
+  for (const a of assignments) {
+    if (a.status === "ACTIVE") {
+      tutorActiveCounts.set(a.tutor.id, (tutorActiveCounts.get(a.tutor.id) ?? 0) + 1);
+    }
+  }
+
   const tutorOptions: SelectOption[] = tutors.map((tutor) => ({
     id: tutor.id,
     label: tutor.name,
-    meta: tutor.subjects.length > 0 ? tutor.subjects.join(", ") : undefined,
+    meta: tutorMeta(tutor, tutorActiveCounts.get(tutor.id) ?? 0),
   }));
 
   const selectedStudent = students.find((student) => student.id === studentId) ?? null;

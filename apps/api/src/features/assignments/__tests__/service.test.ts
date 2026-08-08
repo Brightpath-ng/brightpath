@@ -63,6 +63,7 @@ function buildAssignment(overrides: Partial<AssignmentRecord> = {}): AssignmentR
     updatedAt: new Date("2026-01-01T00:00:00.000Z"),
     student: { id: "student_profile_1", name: "Amaka Obi" },
     tutor: { id: "tutor_profile_1", subjects: ["Mathematics"], user: { name: "Ngozi Adeyemi" } },
+    assignedBy: { id: "admin_user_1", name: "Femi Adisa" },
     ...overrides,
   };
 }
