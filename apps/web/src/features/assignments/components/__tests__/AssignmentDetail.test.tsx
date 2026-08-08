@@ -19,10 +19,11 @@ function buildAssignment(overrides: Partial<Assignment> = {}): Assignment {
 }
 
 describe("AssignmentDetail", () => {
-  it("renders the student, tutor with subjects, and Active status", () => {
+  it("renders the student, tutor, their subjects, and Active status", () => {
     render(<AssignmentDetail assignment={buildAssignment()} />);
     expect(screen.getByText("Amaka Obi")).toBeInTheDocument();
-    expect(screen.getByText("Ngozi Adeyemi (Mathematics)")).toBeInTheDocument();
+    expect(screen.getByText("Ngozi Adeyemi")).toBeInTheDocument();
+    expect(screen.getByText("Mathematics")).toBeInTheDocument();
     expect(screen.getByText("Active")).toBeInTheDocument();
     expect(screen.getByText("Not ended")).toBeInTheDocument();
   });

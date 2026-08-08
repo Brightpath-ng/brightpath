@@ -1,13 +1,15 @@
 import { PageHeader } from "@/components/PageHeader";
+import { listAssignments } from "@/features/assignments/api/list-assignments";
 import { listAllStudentsForPicker } from "@/features/assignments/api/list-students-for-picker";
 import { listApprovedTutorsForPicker } from "@/features/assignments/api/list-tutors-for-picker";
 import { AssignmentForm } from "@/features/assignments/components/AssignmentForm";
 
 export default async function NewAssignmentPage() {
   try {
-    const [students, tutors] = await Promise.all([
+    const [students, tutors, assignments] = await Promise.all([
       listAllStudentsForPicker(),
       listApprovedTutorsForPicker(),
+      listAssignments(),
     ]);
     return (
       <>
@@ -18,7 +20,7 @@ export default async function NewAssignmentPage() {
           backLabel="Matching"
         />
         <div className="p-8">
-          <AssignmentForm students={students} tutors={tutors} />
+          <AssignmentForm students={students} tutors={tutors} assignments={assignments} />
         </div>
       </>
     );

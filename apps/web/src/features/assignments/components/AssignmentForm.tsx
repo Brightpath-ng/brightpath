@@ -2,21 +2,25 @@
 
 import { useState, useTransition, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import { Link2 } from "lucide-react";
 import { Button, Label } from "@brightpath/ui";
-import type { StudentProfile, TutorApplicationSummary } from "@brightpath/types";
+import type { Assignment, StudentProfile, TutorApplicationSummary } from "@brightpath/types";
+import { Select, type SelectOption } from "@/components/ui/select";
 import { assignTutor } from "../api/actions";
-
-const selectClassName =
-  "w-full rounded-[var(--radius-md)] border border-[var(--bg-border)] bg-[var(--bg-surface)] " +
-  "px-3 py-2 text-sm text-[var(--text-primary)] outline-none transition-all duration-150 " +
-  "focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent-dim)]";
+import { PersonAvatar } from "./PersonAvatar";
 
 interface AssignmentFormProps {
   students: StudentProfile[];
   tutors: TutorApplicationSummary[];
+  assignments: Assignment[];
 }
 
-export function AssignmentForm({ students, tutors }: AssignmentFormProps) {
+function studentMeta(student: StudentProfile): string | undefined {
+  if (student.school && student.class) return `${student.school} · ${student.class}`;
+  return student.school ?? undefined;
+}
+
+export function AssignmentForm({ students, tutors, assignments }: AssignmentFormProps) {
   const router = useRouter();
   const [studentId, setStudentId] = useState("");
   const [tutorId, setTutorId] = useState("");
@@ -32,6 +36,28 @@ export function AssignmentForm({ students, tutors }: AssignmentFormProps) {
       </p>
     );
   }
+
+  const studentOptions: SelectOption[] = students.map((student) => ({
+    id: student.id,
+    label: student.name,
+    meta: studentMeta(student),
+  }));
+
+  const tutorOptions: SelectOption[] = tutors.map((tutor) => ({
+    id: tutor.id,
+    label: tutor.name,
+    meta: tutor.subjects.length > 0 ? tutor.subjects.join(", ") : undefined,
+  }));
+
+  const selectedStudent = students.find((student) => student.id === studentId) ?? null;
+  const selectedTutor = tutors.find((tutor) => tutor.id === tutorId) ?? null;
+  const existingAssignment =
+    selectedStudent
+      ? (assignments.find(
+          (assignment) => assignment.status === "ACTIVE" && assignment.student.id === selectedStudent.id
+        ) ?? null)
+      : null;
+  const isReassignment = existingAssignment !== null && existingAssignment.tutor.id !== selectedTutor?.id;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -56,37 +82,54 @@ export function AssignmentForm({ students, tutors }: AssignmentFormProps) {
     <form onSubmit={handleSubmit} className="flex max-w-xl flex-col gap-4">
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="assignmentStudent">Student</Label>
-        <select
+        <Select
           id="assignmentStudent"
-          className={selectClassName}
+          options={studentOptions}
           value={studentId}
-          onChange={(e) => setStudentId(e.target.value)}
-        >
-          <option value="">Select a student</option>
-          {students.map((student) => (
-            <option key={student.id} value={student.id}>
-              {student.name}
-            </option>
-          ))}
-        </select>
+          onChange={setStudentId}
+          placeholder="Select a student"
+        />
       </div>
 
       <div className="flex flex-col gap-1.5">
         <Label htmlFor="assignmentTutor">Tutor</Label>
-        <select
+        <Select
           id="assignmentTutor"
-          className={selectClassName}
+          options={tutorOptions}
           value={tutorId}
-          onChange={(e) => setTutorId(e.target.value)}
-        >
-          <option value="">Select a tutor</option>
-          {tutors.map((tutor) => (
-            <option key={tutor.id} value={tutor.id}>
-              {tutor.name} ({tutor.subjects.join(", ")})
-            </option>
-          ))}
-        </select>
+          onChange={setTutorId}
+          placeholder="Select a tutor"
+        />
       </div>
+
+      {selectedStudent && selectedTutor ? (
+        <div
+          className="flex items-center gap-3 rounded-[var(--radius-lg)] border p-4"
+          style={
+            isReassignment
+              ? { borderColor: "var(--amber-border)", background: "var(--amber-bg)" }
+              : { borderColor: "var(--bg-border-subtle)", background: "var(--bg-elevated)" }
+          }
+        >
+          <div className="flex items-center gap-2">
+            <PersonAvatar />
+            <Link2 aria-hidden="true" className="size-4 shrink-0" style={{ color: "var(--text-tertiary)" }} />
+            <PersonAvatar />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+              {selectedStudent.name} &amp; {selectedTutor.name}
+            </p>
+            <p className="text-xs" style={{ color: isReassignment ? "var(--amber)" : "var(--text-secondary)" }}>
+              {isReassignment
+                ? `Currently assigned to ${existingAssignment!.tutor.name} -- assigning ${selectedTutor.name} will end that assignment.`
+                : existingAssignment
+                  ? `Already assigned to ${selectedTutor.name}.`
+                  : "Ready to assign."}
+            </p>
+          </div>
+        </div>
+      ) : null}
 
       {error ? (
         <p role="alert" className="text-sm" style={{ color: "var(--red)" }}>
